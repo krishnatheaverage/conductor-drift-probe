@@ -40,8 +40,9 @@ scrambled twins move the subspace as much as real dialogues, and the real-versus
 confidence intervals overlap at every layer. We report this as a cautionary, negative
 result, scoped to the models and conditions tested, and release the protocol as a tool
 for vetting representational-drift claims. \textbf{All numbers in this draft are from
-real runs on the released code; the cross-model and sparse-autoencoder cells of the
-evaluation matrix are in progress and are marked as such.}
+real runs on the released code; the null replicates across two model scales tested so
+far (0.5B and 1.5B parameters), and the sparse-autoencoder and larger-model cells of
+the evaluation matrix are in progress and are marked as such.}
 \end{abstract}
 
 \section{Introduction}
@@ -202,8 +203,11 @@ estimate from three dialogues whose median rested on a single topically-divergen
 
 \paragraph{Model and data.} We report \texttt{Qwen2.5-0.5B-Instruct} \citep{qwen25}
 (confirmed by the cached $896$-dim, $24$-layer activations), rank-1 directions, $64$--$96$
-probe pairs per side, and $12$ topically diverse $5$-turn dialogues; cross-model and
-SAE-feature-space cells are in progress (\S\ref{sec:limits}). For the headline test we
+probe pairs per side, and $12$ topically diverse $5$-turn dialogues. The same controlled
+test on \texttt{Qwen2.5-1.5B-Instruct} ($28$ layers) returns the same verdict
+(\textsc{not content-conditional}: no layer clears the decision rule), so the null is not
+an artifact of the smallest model; the SAE-feature-space and larger/MoE cells are in
+progress (\S\ref{sec:limits}). For the headline test we
 take each dialogue's final-turn (full-context) hallucination subspace at every layer,
 compute the median pairwise between-dialogue chordal spread, and bracket it with a
 dialogue-level bootstrap CI, against the scrambled-twin null.
