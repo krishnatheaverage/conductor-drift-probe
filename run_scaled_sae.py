@@ -66,6 +66,19 @@ def load_sae(release, sae_id, device):
     return sae.to(device)
 
 
+def sae_hook_name(sae):
+    """Robust to sae_lens API drift: hook name lives on cfg, or cfg.metadata, or sae."""
+    c = sae.cfg
+    if hasattr(c, "hook_name"):
+        return c.hook_name
+    md = getattr(c, "metadata", None)
+    if md is not None and getattr(md, "hook_name", None):
+        return md.hook_name
+    if getattr(sae, "hook_name", None):
+        return sae.hook_name
+    raise AttributeError("could not locate hook_name on the SAE (cfg/metadata/sae)")
+
+
 @torch.no_grad()
 def sae_features(model, saes, hooks, prompts, device):
     """Return {layer: (n, d_sae)} last-token SAE feature vectors. One prompt at a time so
@@ -119,7 +132,7 @@ def run(args):
     model = HookedTransformer.from_pretrained(cfg["model"], device=device)
     layers = cfg["layers"]
     saes = {l: load_sae(cfg["release"], cfg["sae_id"](l), device) for l in layers}
-    hooks = {l: saes[l].cfg.hook_name for l in layers}
+    hooks = {l: sae_hook_name(saes[l]) for l in layers}
     print(f"loaded {len(saes)} SAEs at layers {layers}")
 
     uncert = P.UNCERTAINTY_PAIRS_BIG[: args.max_probes]
