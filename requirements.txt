@@ -1,0 +1,12 @@
+# Core (required for the synthetic self-test, which is the offline validation path)
+numpy
+scipy
+
+# Real-model run only
+torch
+transformers
+matplotlib
+
+# Optional, NOT required: SAE feature-space lift (not used by default; the core
+# geometry claim is testable in raw activation space).
+# sae_lens

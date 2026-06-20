@@ -1,0 +1,362 @@
+{
+  "model": "Qwen/Qwen2.5-0.5B-Instruct",
+  "n_dialogues": 12,
+  "n_probes": 64,
+  "rank": 1,
+  "content_conditional_band_len": 0,
+  "content_conditional_band_layers": [],
+  "verdict": "NOT_CONTENT_CONDITIONAL",
+  "per_layer": [
+    {
+      "layer": 0,
+      "real": 0.0,
+      "real_ci": [
+        0.0,
+        0.0
+      ],
+      "scrambled": 0.0,
+      "scrambled_ci": [
+        0.0,
+        0.0
+      ],
+      "content_significant": false
+    },
+    {
+      "layer": 1,
+      "real": 0.5977449154422582,
+      "real_ci": [
+        0.41901915390791444,
+        0.669297809089613
+      ],
+      "scrambled": 0.6583071408721991,
+      "scrambled_ci": [
+        0.5647694847828836,
+        0.734407348788345
+      ],
+      "content_significant": false
+    },
+    {
+      "layer": 2,
+      "real": 0.4283003454239839,
+      "real_ci": [
+        0.37445603295101243,
+        0.5000040307789289
+      ],
+      "scrambled": 0.4448542566937611,
+      "scrambled_ci": [
+        0.3843382810021145,
+        0.5343664501730998
+      ],
+      "content_significant": false
+    },
+    {
+      "layer": 3,
+      "real": 0.4136234441047656,
+      "real_ci": [
+        0.3555318421130959,
+        0.47647597932303587
+      ],
+      "scrambled": 0.4216725900900655,
+      "scrambled_ci": [
+        0.36914533933001337,
+        0.5127763976065798
+      ],
+      "content_significant": false
+    },
+    {
+      "layer": 4,
+      "real": 0.3597755229934344,
+      "real_ci": [
+        0.3035567201785551,
+        0.42443325997259407
+      ],
+      "scrambled": 0.3655488319903998,
+      "scrambled_ci": [
+        0.3199309853750527,
+        0.4586249297574065
+      ],
+      "content_significant": false
+    },
+    {
+      "layer": 5,
+      "real": 0.3588552703909079,
+      "real_ci": [
+        0.2971111087522493,
+        0.40867928210581617
+      ],
+      "scrambled": 0.3592441882108631,
+      "scrambled_ci": [
+        0.3398783530979624,
+        0.44321364696274324
+      ],
+      "content_significant": false
+    },
+    {
+      "layer": 6,
+      "real": 0.4509982428576865,
+      "real_ci": [
+        0.4018786265029835,
+        0.4986254179755418
+      ],
+      "scrambled": 0.4706316858121299,
+      "scrambled_ci": [
+        0.42810327924437486,
+        0.5287120565187631
+      ],
+      "content_significant": false
+    },
+    {
+      "layer": 7,
+      "real": 0.35162245992165037,
+      "real_ci": [
+        0.3124780863555284,
+        0.3784462934906766
+      ],
+      "scrambled": 0.37112704899875604,
+      "scrambled_ci": [
+        0.3324332815724943,
+        0.39848602599846017
+      ],
+      "content_significant": false
+    },
+    {
+      "layer": 8,
+      "real": 0.3092783486865864,
+      "real_ci": [
+        0.2679407262194383,
+        0.338311219245798
+      ],
+      "scrambled": 0.33224278960181697,
+      "scrambled_ci": [
+        0.30805103963195885,
+        0.35570076897996394
+      ],
+      "content_significant": false
+    },
+    {
+      "layer": 9,
+      "real": 0.30794787040086236,
+      "real_ci": [
+        0.25990489090817837,
+        0.33365424772456087
+      ],
+      "scrambled": 0.3230413550972836,
+      "scrambled_ci": [
+        0.2989128125586027,
+        0.3428771607720055
+      ],
+      "content_significant": false
+    },
+    {
+      "layer": 10,
+      "real": 0.26404891042879786,
+      "real_ci": [
+        0.23326456409935542,
+        0.2974863840406355
+      ],
+      "scrambled": 0.2669388668815721,
+      "scrambled_ci": [
+        0.24148864958612465,
+        0.295728974053002
+      ],
+      "content_significant": false
+    },
+    {
+      "layer": 11,
+      "real": 0.32288514268578394,
+      "real_ci": [
+        0.24540709474604822,
+        0.37131061089020395
+      ],
+      "scrambled": 0.29074013950840205,
+      "scrambled_ci": [
+        0.254957307658976,
+        0.3396429216857907
+      ],
+      "content_significant": false
+    },
+    {
+      "layer": 12,
+      "real": 0.346810458870891,
+      "real_ci": [
+        0.266534589762315,
+        0.47119371940234356
+      ],
+      "scrambled": 0.32213731263504575,
+      "scrambled_ci": [
+        0.2873293432609806,
+        0.3705386988516065
+      ],
+      "content_significant": false
+    },
+    {
+      "layer": 13,
+      "real": 0.31701060258052216,
+      "real_ci": [
+        0.23054156307068518,
+        0.4014344069315595
+      ],
+      "scrambled": 0.2871713814724278,
+      "scrambled_ci": [
+        0.23616759311369626,
+        0.3382793730942703
+      ],
+      "content_significant": false
+    },
+    {
+      "layer": 14,
+      "real": 0.3270319770957226,
+      "real_ci": [
+        0.2441411690455358,
+        0.41528397140611456
+      ],
+      "scrambled": 0.301646065303574,
+      "scrambled_ci": [
+        0.2437145281026344,
+        0.34925456200234406
+      ],
+      "content_significant": false
+    },
+    {
+      "layer": 15,
+      "real": 0.3231712755842579,
+      "real_ci": [
+        0.23884323799686868,
+        0.40558375390952495
+      ],
+      "scrambled": 0.27226657279421973,
+      "scrambled_ci": [
+        0.23528023366865286,
+        0.31723896125977197
+      ],
+      "content_significant": false
+    },
+    {
+      "layer": 16,
+      "real": 0.24532899360298416,
+      "real_ci": [
+        0.196872044111401,
+        0.3206570140574149
+      ],
+      "scrambled": 0.21888396413892452,
+      "scrambled_ci": [
+        0.18671576085072106,
+        0.27195477411396946
+      ],
+      "content_significant": false
+    },
+    {
+      "layer": 17,
+      "real": 0.250247318252342,
+      "real_ci": [
+        0.2015260209689499,
+        0.3210330266324749
+      ],
+      "scrambled": 0.22184171512598427,
+      "scrambled_ci": [
+        0.18423797030629246,
+        0.2790628073526912
+      ],
+      "content_significant": false
+    },
+    {
+      "layer": 18,
+      "real": 0.2527038378586567,
+      "real_ci": [
+        0.20093434581123826,
+        0.31903128894875554
+      ],
+      "scrambled": 0.22122193351221148,
+      "scrambled_ci": [
+        0.18544214519511068,
+        0.2750379872594506
+      ],
+      "content_significant": false
+    },
+    {
+      "layer": 19,
+      "real": 0.26823986728768534,
+      "real_ci": [
+        0.2147118997550215,
+        0.3258147157184227
+      ],
+      "scrambled": 0.23481235813297013,
+      "scrambled_ci": [
+        0.1947198278265761,
+        0.2916889604359227
+      ],
+      "content_significant": false
+    },
+    {
+      "layer": 20,
+      "real": 0.2657063000896094,
+      "real_ci": [
+        0.19949215926297884,
+        0.31298023657032675
+      ],
+      "scrambled": 0.23145665542057797,
+      "scrambled_ci": [
+        0.1882610472332574,
+        0.29638846030969007
+      ],
+      "content_significant": false
+    },
+    {
+      "layer": 21,
+      "real": 0.2610438958749809,
+      "real_ci": [
+        0.20171536457121908,
+        0.3045244337176244
+      ],
+      "scrambled": 0.2408119676488677,
+      "scrambled_ci": [
+        0.19479028296350437,
+        0.29494203732588575
+      ],
+      "content_significant": false
+    },
+    {
+      "layer": 22,
+      "real": 0.2640468184785244,
+      "real_ci": [
+        0.2105569305899285,
+        0.3120108153502686
+      ],
+      "scrambled": 0.24879958877763542,
+      "scrambled_ci": [
+        0.19492539009384355,
+        0.31431692147331314
+      ],
+      "content_significant": false
+    },
+    {
+      "layer": 23,
+      "real": 0.2700781853570676,
+      "real_ci": [
+        0.21753727994227057,
+        0.3227624286551086
+      ],
+      "scrambled": 0.25051059439388296,
+      "scrambled_ci": [
+        0.2038025457099789,
+        0.31186405357279257
+      ],
+      "content_significant": false
+    },
+    {
+      "layer": 24,
+      "real": 0.2750346723581421,
+      "real_ci": [
+        0.22212348268628437,
+        0.3262610206818907
+      ],
+      "scrambled": 0.24012076795547993,
+      "scrambled_ci": [
+        0.2019618418088034,
+        0.31294922336914877
+      ],
+      "content_significant": false
+    }
+  ],
+  "method": "12 diverse dialogues; final-turn H subspace; dialogue-level bootstrap CI (real vs length/topic-matched scrambled twins); significant iff real CI_lo > scrambled CI_hi, so no single dialogue can carry the result."
+}

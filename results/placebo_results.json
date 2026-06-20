@@ -1,0 +1,174 @@
+{
+  "model": "Qwen/Qwen2.5-0.5B-Instruct",
+  "interpretation": "scrambled twins hold token length + position + topic fixed and destroy coherent content; real_spread must exceed scrambled_spread for the movement to be attributable to dialogue content",
+  "best_layer": 12,
+  "best_layer_real_spread": 0.5095343364176557,
+  "best_layer_scrambled_spread": 0.38756826117886894,
+  "best_layer_floor95": 0.22387501885810818,
+  "band_layers_where_real_beats_placebo_by_0.05": [
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+  ],
+  "content_conditional_supported_by_placebo": true,
+  "per_layer": [
+    {
+      "layer": 0,
+      "real_spread": 0.0,
+      "scrambled_spread": 0.0,
+      "floor95": 0.0
+    },
+    {
+      "layer": 1,
+      "real_spread": 0.3210197998580214,
+      "scrambled_spread": 0.3796755830373067,
+      "floor95": 0.2759736181229253
+    },
+    {
+      "layer": 2,
+      "real_spread": 0.41914354506451174,
+      "scrambled_spread": 0.45302274251450525,
+      "floor95": 0.22517211223443825
+    },
+    {
+      "layer": 3,
+      "real_spread": 0.3968674385079748,
+      "scrambled_spread": 0.4411932972362494,
+      "floor95": 0.21621977605596393
+    },
+    {
+      "layer": 4,
+      "real_spread": 0.3674464089027393,
+      "scrambled_spread": 0.44354646487556454,
+      "floor95": 0.24886021503413183
+    },
+    {
+      "layer": 5,
+      "real_spread": 0.39620770622832036,
+      "scrambled_spread": 0.4421632355785759,
+      "floor95": 0.2909867165768534
+    },
+    {
+      "layer": 6,
+      "real_spread": 0.45246038482198986,
+      "scrambled_spread": 0.5216921794757302,
+      "floor95": 0.3636488182511128
+    },
+    {
+      "layer": 7,
+      "real_spread": 0.38831632775427255,
+      "scrambled_spread": 0.4124825358197533,
+      "floor95": 0.30069551055078303
+    },
+    {
+      "layer": 8,
+      "real_spread": 0.3463476377713893,
+      "scrambled_spread": 0.37065718323555913,
+      "floor95": 0.30262874387635164
+    },
+    {
+      "layer": 9,
+      "real_spread": 0.3275391593799578,
+      "scrambled_spread": 0.3637931458498648,
+      "floor95": 0.29657205664170044
+    },
+    {
+      "layer": 10,
+      "real_spread": 0.2723065393712044,
+      "scrambled_spread": 0.2901840863324095,
+      "floor95": 0.22192618336272116
+    },
+    {
+      "layer": 11,
+      "real_spread": 0.41023198720759463,
+      "scrambled_spread": 0.34542750672900635,
+      "floor95": 0.2416120644164571
+    },
+    {
+      "layer": 12,
+      "real_spread": 0.5095343364176557,
+      "scrambled_spread": 0.38756826117886894,
+      "floor95": 0.22387501885810818
+    },
+    {
+      "layer": 13,
+      "real_spread": 0.4754326672190369,
+      "scrambled_spread": 0.306071247593577,
+      "floor95": 0.17953941877016844
+    },
+    {
+      "layer": 14,
+      "real_spread": 0.502896752562161,
+      "scrambled_spread": 0.30569640812206833,
+      "floor95": 0.17014860450292169
+    },
+    {
+      "layer": 15,
+      "real_spread": 0.45484592053529405,
+      "scrambled_spread": 0.25612996195482923,
+      "floor95": 0.209312614107704
+    },
+    {
+      "layer": 16,
+      "real_spread": 0.3655689696079576,
+      "scrambled_spread": 0.20880282349766532,
+      "floor95": 0.1628546912776044
+    },
+    {
+      "layer": 17,
+      "real_spread": 0.35308712882458737,
+      "scrambled_spread": 0.22534650423149263,
+      "floor95": 0.15726227831667297
+    },
+    {
+      "layer": 18,
+      "real_spread": 0.3509085536872047,
+      "scrambled_spread": 0.2216985536174634,
+      "floor95": 0.15792155130645913
+    },
+    {
+      "layer": 19,
+      "real_spread": 0.37537706277267424,
+      "scrambled_spread": 0.23994541219221396,
+      "floor95": 0.1648301198690879
+    },
+    {
+      "layer": 20,
+      "real_spread": 0.3510502872486567,
+      "scrambled_spread": 0.23379501235086111,
+      "floor95": 0.17423145341525656
+    },
+    {
+      "layer": 21,
+      "real_spread": 0.3323846992237142,
+      "scrambled_spread": 0.2398782764760102,
+      "floor95": 0.3122551405223408
+    },
+    {
+      "layer": 22,
+      "real_spread": 0.3287664172790802,
+      "scrambled_spread": 0.2564163504691292,
+      "floor95": 0.3586844966126937
+    },
+    {
+      "layer": 23,
+      "real_spread": 0.3367168637833769,
+      "scrambled_spread": 0.2539175202511394,
+      "floor95": 0.39248617415908355
+    },
+    {
+      "layer": 24,
+      "real_spread": 0.29970938598016306,
+      "scrambled_spread": 0.26355761550743534,
+      "floor95": 0.2764655969886675
+    }
+  ]
+}

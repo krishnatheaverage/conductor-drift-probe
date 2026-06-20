@@ -1,0 +1,147 @@
+{
+  "model": "Qwen/Qwen2.5-0.5B-Instruct",
+  "layer": 12,
+  "rank": 1,
+  "n_probes_per_side": 32,
+  "is_moe": false,
+  "headline_verdict": "PREMISE_FALSIFIED",
+  "headline": {
+    "verdict": "PREMISE_FALSIFIED",
+    "drift_median": 0.24624234287278968,
+    "drift_noise_floor_median": 0.1680647573743013,
+    "drift_noise_floor_ci_hi": 0.2669836075718653,
+    "drift_ratio": 1.4651634686526045,
+    "drift_median_noise_corrected": 0.17997091085005307,
+    "drift_bands_disjoint": false,
+    "effect_exceeds_min": true,
+    "min_effect_required": 0.05,
+    "omega_range_across_turns": 0.010725531009174795,
+    "omega_noise_band_width": 0.03909071766805902,
+    "omega_moves": false,
+    "note": "PREMISE_SUPPORTED means the subspaces measurably rotate across turns, so a static projection is mis-specified and the conditional CONDUCTOR machinery is motivated. PREMISE_FALSIFIED means a static projection suffices and the framework should not be built. If FALSIFIED with a high noise floor, the run is underpowered: add probe pairs and retry before concluding.",
+    "omega_moves_any_dialogue": false
+  },
+  "safety_subspace_drift": {
+    "median": 0.19542441972962588,
+    "noise_floor_median": 0.47333134927785026,
+    "noise_floor_ci_hi": 0.9625598592483801,
+    "noise_corrected": 0.0,
+    "significant": false,
+    "effect_exceeds_min": false,
+    "values": [
+      0.4380322938301079,
+      0.20232315298844153,
+      0.1400602205404903,
+      0.1563395565287743,
+      0.44094822222081836,
+      0.2163365122953531,
+      0.1656714456284446,
+      0.2651821564648714,
+      0.41911327035172274,
+      0.18852568647081022,
+      0.17635909875619124,
+      0.1548442486182187
+    ]
+  },
+  "hallucination_subspace_drift": {
+    "median": 0.24624234287278968,
+    "noise_floor_median": 0.1680647573743013,
+    "noise_floor_ci_hi": 0.2669836075718653,
+    "noise_corrected": 0.17997091085005307,
+    "significant": false,
+    "effect_exceeds_min": true,
+    "values": [
+      0.5902547830883126,
+      0.34520072743374774,
+      0.15827609219417327,
+      0.14662694502081988,
+      0.6429398363703879,
+      0.34437333478773346,
+      0.23371003988325137,
+      0.258774645862328,
+      0.5976290972286028,
+      0.22332511763203633,
+      0.2151821448449188,
+      0.15085299697467316
+    ]
+  },
+  "omega_noise_band_width": 0.03909071766805902,
+  "omega_moves_per_dialogue": {
+    "benign_escalation": false,
+    "crescendo": false,
+    "neutral_control": false
+  },
+  "per_dialogue": {
+    "benign_escalation": {
+      "omega_series": [
+        0.002178998834838816,
+        0.007084808179423437,
+        0.010758041260143692,
+        0.00810417679950894,
+        0.0031592164312371283
+      ],
+      "omega_range": 0.008579042425304877,
+      "S_drift": [
+        0.4380322938301079,
+        0.20232315298844153,
+        0.1400602205404903,
+        0.1563395565287743
+      ],
+      "H_drift": [
+        0.5902547830883126,
+        0.34520072743374774,
+        0.15827609219417327,
+        0.14662694502081988
+      ]
+    },
+    "crescendo": {
+      "omega_series": [
+        0.002178998834838816,
+        0.00037046733172554593,
+        0.0008956737893010023,
+        0.00037360139660063085,
+        0.0009473414930741714
+      ],
+      "omega_range": 0.00180853150311327,
+      "S_drift": [
+        0.44094822222081836,
+        0.2163365122953531,
+        0.1656714456284446,
+        0.2651821564648714
+      ],
+      "H_drift": [
+        0.6429398363703879,
+        0.34437333478773346,
+        0.23371003988325137,
+        0.258774645862328
+      ]
+    },
+    "neutral_control": {
+      "omega_series": [
+        0.002178998834838816,
+        0.003146337150379929,
+        6.20992029626414e-05,
+        3.251025096889804e-05,
+        0.0005667571883037649
+      ],
+      "omega_range": 0.003113826899411031,
+      "S_drift": [
+        0.41911327035172274,
+        0.18852568647081022,
+        0.17635909875619124,
+        0.1548442486182187
+      ],
+      "H_drift": [
+        0.5976290972286028,
+        0.22332511763203633,
+        0.2151821448449188,
+        0.15085299697467316
+      ]
+    }
+  },
+  "caveats": [
+    "Small probe banks: estimation-noise floor is high; treat a FALSIFIED verdict as possibly underpowered (see README Statistical power).",
+    "Subspaces are recovered in raw activation space, not SAE feature space (no SAE library installed); SAE features are the interpretable lift.",
+    "Last-token activation at one layer; the geometry may differ by layer."
+  ]
+}

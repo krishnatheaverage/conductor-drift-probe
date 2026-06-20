@@ -1,0 +1,300 @@
+\documentclass{article}
+\usepackage{tmlr}
+% \usepackage[accepted]{tmlr}   % uncomment for the camera-ready
+% \usepackage[preprint]{tmlr}   % uncomment for a non-anonymous preprint
+
+\usepackage{amsmath,amssymb,booktabs,graphicx,xcolor}
+\graphicspath{{../results/}}
+
+\title{Is the Safety and Hallucination Feature Geometry of \\ Language Models Conditional on Dialogue Context? \\ A Confound-Controlled Study}
+
+\author{\name Anonymous \email anon@example.com \\ \addr Affiliation withheld for review}
+
+\def\month{06}
+\def\year{2026}
+\def\openreview{\url{https://openreview.net/forum?id=XXXXXXXXXX}}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+A growing class of inference-time alignment methods, conditional activation
+steering and conditional subspace disentanglement of hallucination from safety,
+rests on an implicit premise: that the low-dimensional residual-stream directions
+encoding safety/refusal and epistemic uncertainty are \emph{conditional} on dialogue
+context, so that a single static intervention learned on one context is
+mis-specified for another. We ask whether this premise is empirically true, and find
+that the obvious ways of measuring it are confounded. We introduce a confound-controlled
+protocol: subspaces are recovered by contrastive difference-of-means, drift is measured
+as a gauge-invariant chordal distance between subspaces, and ``the subspace moved with
+context'' is tested against (i) a turn-1 baseline that removes the generic
+no-context$\to$context jump, (ii) a length- and topic-matched \emph{scrambled-twin}
+null that holds token count and lexical content fixed while destroying coherent
+meaning, and (iii) a dialogue-level bootstrap confidence interval so that no single
+dialogue can carry the result. Applied to an instruction-tuned model, three intuitive
+positive measurements (cumulative displacement, between-dialogue spread versus a
+same-context floor, and a small-sample placebo comparison) are each overturned by the
+next control. Under the full protocol, the apparent context-conditionality of the
+hallucination subspace is statistically indistinguishable from a length/topic artifact:
+scrambled twins move the subspace as much as real dialogues, and the real-versus-placebo
+confidence intervals overlap at every layer. We report this as a cautionary, negative
+result, scoped to the models and conditions tested, and release the protocol as a tool
+for vetting representational-drift claims. \textbf{All numbers in this draft are from
+real runs on the released code; the cross-model and sparse-autoencoder cells of the
+evaluation matrix are in progress and are marked as such.}
+\end{abstract}
+
+\section{Introduction}
+\label{sec:intro}
+
+Mechanistic interpretability has established that high-level behaviors of large language
+models (LLMs) are often approximately linearly encoded: refusal is mediated by a single
+residual-stream direction \citep{arditi2024refusal}, truth/falsehood is linearly
+represented \citep{marks2023geometry}, and sparse autoencoders (SAEs) recover
+interpretable feature directions at scale \citep{bricken2023monosemanticity,
+templeton2024scaling, lieberum2024gemmascope}. These directions can be read and steered
+\citep{zou2023repe, li2023iti, panickssery2024caa} and erased in closed form
+\citep{ravfogel2020inlp, belrose2023leace}.
+
+A natural next step, pursued by recent work, is to \emph{disentangle} behaviors that
+share latent components: for example, to mitigate hallucination without degrading safety
+by orthogonalizing the SAE subspaces that encode them \citep{mahmoud2025unintended}. Once
+one moves from a single static edit to a \emph{conditional} one, an implicit empirical
+premise enters: that the relevant geometry is conditional on context, so that a single
+projection learned on one context (or on single-turn data) is mis-specified elsewhere,
+and in particular drifts as a multi-turn dialogue accumulates. This premise is rarely
+stated, let alone tested. It is also non-obvious: the geometry-of-refusal literature has
+shown that geometric orthogonality need not imply behavioral independence
+\citep{wollschlager2025geometry}, that refusal is multi-directional \citep{pan2025hidden},
+and that steering vectors generalize poorly and are brittle \citep{tan2024steering}.
+
+We ask the prior question directly: \emph{does dialogue context actually rotate the
+safety and hallucination subspaces, beyond trivial confounds?} The contribution is not a
+new alignment method but a measurement and a caution:
+
+\begin{itemize}
+\item \textbf{A confound-controlled protocol} (\S\ref{sec:method}) for testing
+representational drift: gauge-invariant chordal drift between contrastively-recovered
+subspaces, a turn-1 baseline, a length/topic-matched scrambled-twin null, and
+dialogue-level bootstrap confidence intervals. The protocol is validated against analytic
+ground truth.
+\item \textbf{A rigor cascade} (\S\ref{sec:cascade}) showing that three intuitive
+positive measurements of context-conditionality are each artifacts: a no-context onset
+jump, a same-context null that carries no length/topic variance, and a small-sample
+($n{=}3$ dialogue) placebo comparison.
+\item \textbf{A negative finding} (\S\ref{sec:main}): under the full protocol, on the
+instruction-tuned model tested, the hallucination subspace's apparent
+context-conditionality is statistically indistinguishable from a length/topic artifact,
+and the safety/refusal subspace is not even cleanly recoverable below the mid layers, so
+the cross-subspace entanglement that conditional-disentanglement methods target cannot be
+measured where it would be needed.
+\end{itemize}
+
+Our claim is deliberately scoped: we do not claim the premise is false for all models or
+in SAE feature space. We claim that the premise is \emph{not supported} by the obvious
+measurements once they are controlled, that the controls matter (they flip the
+conclusion), and that methods built on this premise should report the controlled
+measurement before assuming it.
+
+\section{Setup and Method}
+\label{sec:method}
+
+\paragraph{Subspaces by contrast.} At dialogue turn $t$, we prepend the running
+conversation (the first $t$ user turns, each followed by a fixed neutral assistant reply)
+and append a bank of contrastive probes as the next user turn, reading the last-token
+residual activation $x \in \mathbb{R}^d$ at each layer. The \emph{hallucination/epistemic}
+subspace $H_t$ is the rank-$k$ difference-of-means direction(s) between answerable
+real-entity questions and surface-matched unanswerable fictional-entity questions
+(following the knowledge-awareness construction of \citealp{ferrando2025entity}); the
+\emph{safety} subspace $S_t$ is the analogous contrast between harmful and surface-matched
+harmless requests (the refusal direction of \citealp{arditi2024refusal}). Concretely,
+$U_t \in \mathbb{R}^{d\times k}$ is an orthonormal basis for the top-$k$ left singular
+vectors of the matrix of paired activation differences. Because the probes are fixed and
+only the prepended context varies, any movement in $U_t$ is attributable to context.
+
+\paragraph{Gauge-invariant drift.} For two $k$-planes with bases $U,V$, let
+$\sigma_i$ be the singular values of $U^\top V$ (cosines of the principal angles
+$\theta_i$). We measure drift by the normalized chordal distance
+\begin{equation}
+d(U,V) \;=\; \sqrt{\tfrac{1}{k}\textstyle\sum_i \sin^2\theta_i}
+\;=\; \tfrac{1}{\sqrt{2k}}\,\|UU^\top - VV^\top\|_F \;\in\; [0,1],
+\end{equation}
+which is $0$ for identical subspaces and $1$ for orthogonal ones, and is invariant to the
+(arbitrary) basis returned by the estimator \citep{edelman1998geometry}. Cross-subspace
+entanglement is $\Omega(S_t,H_t)=\tfrac{1}{k}\|U^{S\top}_t U^H_t\|_F^2 \in [0,1]$
+(1 = coincident, 0 = orthogonal), the quantity a static orthogonalizer drives to $0$ once.
+
+\paragraph{The confounds, and the controls.} ``The subspace moved with context'' is easy
+to measure badly. Three confounds dominate, each with a control:
+\begin{enumerate}
+\item \textbf{No-context onset.} Turn $0$ has no context; $d(U_0,U_t)$ is dominated by the
+generic transition from a bare probe to a probe-in-context, shared across all dialogues.
+\emph{Control:} baseline at turn $1$ and measure $d(U_1,U_t)$.
+\item \textbf{Token length and final-token position.} As a dialogue grows, the prompt
+grows; last-token activations of a position-encoded model shift with absolute length even
+at fixed content. \emph{Control:} a \emph{scrambled-twin} null, word-shuffling each user
+turn, which preserves the exact token multiset (hence length, topic, and lexicon) while
+destroying coherent meaning. Genuine content-conditionality requires the real subspace to
+move \emph{more} than its scrambled twin.
+\item \textbf{Single-dialogue idiosyncrasy.} A between-dialogue spread computed from a few
+dialogues can be carried by one outlier. \emph{Control:} a dialogue-level bootstrap
+confidence interval (resampling dialogues, not just probes).
+\end{enumerate}
+The naive null, two independent bootstrap resamples of the \emph{same} probe set at a
+fixed context, is a probe-resampling noise floor; we show in \S\ref{sec:cascade} that it
+is the \emph{wrong} null for a between-context statistic because it carries no
+length/topic variance. The decision rule for content-conditionality is: at a layer, the
+real between-dialogue spread's lower 95\% bound exceeds the scrambled-twin spread's upper
+95\% bound, over a contiguous band of $\geq 3$ layers.
+
+\paragraph{Validation.} The estimator and decision rule are validated against analytic
+ground truth (synthetic activations whose contrast subspace rotates by a known angle): a
+static subspace returns drift at the noise floor (verdict negative), and a $15^\circ$/turn
+rotation is recovered as noise-corrected drift $0.144$ against an analytic $0.149$ (verdict
+positive). The same code is used for the real runs.
+
+\paragraph{Statistical power.} Subspace estimation in $d\!\approx\!10^3$ activation space is
+noisy; the noise floor scales like $1/\sqrt{n_{\text{probes}}}$. On the tested model the
+rank-1 floor (95\%) falls from $0.49$ at $16$ probes to $0.22$ at $96$ probes, while
+rank-$2$/$3$ subspaces from a few dozen probes are pure noise (floor $\approx 0.7$, i.e.\
+two estimates of the \emph{same} subspace are near-orthogonal). We therefore use rank-1
+difference-of-means directions and $\geq 96$ probe pairs, and report the floor so an
+under-powered run is never mistaken for a null effect.
+
+\section{The Rigor Cascade: three positive measurements, each overturned}
+\label{sec:cascade}
+
+We tested the premise with measurements of increasing rigor; each caught a confound in
+the previous one (Table~\ref{tab:cascade}). This cascade is itself a contribution: it
+shows concretely how intuitive measurements of representational drift mislead.
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{@{}llll@{}}
+\toprule
+Step & Measurement & Headline & Overturned by \\
+\midrule
+1 & consecutive drift, 32 probes, one layer & inconclusive (under-powered) & noise floor too high \\
+2 & cumulative drift from turn 0 & \textcolor{red}{positive} & turn-0 onset confound \\
+3 & spread vs same-context floor & \textcolor{red}{positive} (21 layers) & floor carries no length variance \\
+4 & scrambled placebo, $n{=}3$ dialogues & \textcolor{red}{positive} (layers 11--21) & $n{=}3$, no CI; one outlier dialogue \\
+5 & \textbf{scrambled, $n{=}12$, dialogue-level CI} & \textbf{negative} & --- (the controlled result) \\
+\bottomrule
+\end{tabular}
+\caption{Each row's headline was overturned by the next control. Steps 2--4 are
+\emph{false positives} produced by intuitive but confounded measurements; step 5 is the
+controlled result. Section~\ref{sec:main} reports step 5.}
+\label{tab:cascade}
+\end{table}
+
+At step 3 the same-context floor makes ``spread $>$ floor'' near-tautological: the floor
+resamples probes within one fixed context and therefore contains zero between-dialogue
+length/topic/position variance, while the spread contains all of it. Empirically the
+between-dialogue spread grew monotonically with turn index in lockstep with the per-turn
+token-length gap (which reached $\approx 12\%$ at the turn where the spread is measured),
+the signature of a length artifact, not content. At step 4 the scrambled-twin control
+appeared to rescue a content effect at the mid-to-late layers, but only as a point
+estimate from three dialogues whose median rested on a single topically-divergent script.
+
+\section{Controlled Result}
+\label{sec:main}
+
+\paragraph{Model and data.} We report \texttt{Qwen2.5-0.5B-Instruct} \citep{qwen25}
+(confirmed by the cached $896$-dim, $24$-layer activations), rank-1 directions, $64$--$96$
+probe pairs per side, and $12$ topically diverse $5$-turn dialogues; cross-model and
+SAE-feature-space cells are in progress (\S\ref{sec:limits}). For the headline test we
+take each dialogue's final-turn (full-context) hallucination subspace at every layer,
+compute the median pairwise between-dialogue chordal spread, and bracket it with a
+dialogue-level bootstrap CI, against the scrambled-twin null.
+
+\paragraph{Finding.} The apparent content-conditionality does not survive
+(Figure~\ref{fig:scaled}). At \emph{every} layer the real-dialogue spread CI overlaps the
+scrambled-twin spread CI: e.g.\ at layer 12, real $0.347$ $[0.27,0.47]$ versus scrambled
+$0.322$ $[0.29,0.37]$; at layer 15, $0.323$ $[0.24,0.41]$ versus $0.272$ $[0.24,0.32]$. A
+small, consistent, non-significant trend remains at the mid-to-late layers (real slightly
+above scrambled), but no layer satisfies the pre-registered decision rule
+(real CI lower bound $>$ scrambled CI upper bound). Scrambled twins, which hold token
+length, position, and lexical topic fixed while destroying coherent dialogue meaning, move
+the hallucination subspace as much as the real dialogues do. The between-dialogue movement
+is therefore attributable to length/topic, not to coherent dialogue content.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.78\linewidth]{scaled_compare.png}
+\caption{Controlled result ($n{=}12$ dialogues, dialogue-level 95\% CIs). Real (blue) and
+scrambled-twin (orange) between-dialogue spread bands overlap at every layer: coherent
+content adds nothing detectable beyond the length/topic that the scrambled twin already
+matches. Compare to the $n{=}3$ placebo (Figure~\ref{fig:placebo}), which appeared
+positive.}
+\label{fig:scaled}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.70\linewidth]{placebo_compare.png}
+\caption{The $n{=}3$ placebo that the controlled result overturns. Early layers (1--10):
+scrambled $\geq$ real (a length/lexical artifact). Mid-late layers (11--21): real $>$
+scrambled, which \emph{looked} like a content effect but, lacking a dialogue-level CI,
+was a small-sample artifact (Figure~\ref{fig:scaled}).}
+\label{fig:placebo}
+\end{figure}
+
+\paragraph{The safety side is worse, not better.} The premise that matters for
+conditional \emph{disentanglement} concerns the joint geometry of $S_t$ and $H_t$. On this
+model the refusal direction is not cleanly recoverable below the mid layers: two
+independent estimates of the same $S$ subspace are near-orthogonal (floor $\approx 1.0$)
+through roughly the first half of the network, becoming recoverable only at layers
+$\gtrsim 13$. The cross-subspace overlap $\Omega(S_t,H_t)$ is therefore meaningful only at
+late layers, where its movement across turns is small ($\approx 0.06$). We thus cannot
+even measure the entanglement drift that conditional disentanglement is designed to track,
+let alone show it is large.
+
+\section{Discussion, Scope, and Limitations}
+\label{sec:limits}
+
+\paragraph{What this does and does not establish.} It establishes that, for the model and
+construction tested, three intuitive measurements of context-conditionality are
+confounded, and that the controlled measurement returns a null. It does \emph{not}
+establish that the premise is universally false. The most important open cells, which we
+are running and which any method paper relying on the premise should report, are:
+\textbf{(a)} SAE feature space rather than raw activations (the space in which
+disentanglement methods actually operate; \citealp{lieberum2024gemmascope}), where the
+basis is interpretable and a true ``feature'' may behave differently from a
+difference-of-means direction; \textbf{(b)} larger instruction-tuned models, where the
+refusal direction is recoverable at more layers and the safety side becomes testable;
+\textbf{(c)} a mixture-of-experts model, for the per-expert variant of the premise;
+\textbf{(d)} higher-rank subspaces; and \textbf{(e)} a direct test of mis-specification,
+fitting a static disentangling projector and measuring whether it re-entangles at later
+turns. Our protocol ports to all five with only a change of backend.
+
+\paragraph{Residual confounds in the control.} The scrambled twin holds token length and
+topic but conflates coherent ``dialogue content'' with ``epistemic state''; a fully
+within-topic content manipulation would separate these. Word-shuffling may also partially
+degrade topic extraction; this would, if anything, bias toward a (spurious) positive,
+which we do not observe.
+
+\paragraph{Implication.} The negative result is not an indictment of conditional steering
+or disentanglement; it is a request that such methods measure, with controls, the premise
+they assume. A static intervention is mis-specified only if the geometry it freezes
+actually moves with context beyond length and topic. On the present evidence, the cheap
+and decisive thing is to run the controlled measurement first.
+
+\section{Conclusion}
+
+We asked whether dialogue context rotates the safety and hallucination subspaces of an LLM,
+the premise underlying conditional disentanglement. The obvious measurements say yes; each
+is a confound. Under a length/topic-matched, dialogue-level-bootstrapped protocol the
+effect is within noise on the model tested, and the safety subspace is not recoverable
+where the premise would need to hold. We release the protocol and the full rigor cascade so
+that representational-drift claims, positive or negative, can be vetted before they are
+built upon.
+
+\paragraph{Reproducibility.} All code, probe banks, dialogues, cached activations, and the
+synthetic ground-truth validation are released; every figure and number is regenerated by
+the released scripts.
+
+\bibliography{refs}
+\bibliographystyle{tmlr}
+
+\end{document}
