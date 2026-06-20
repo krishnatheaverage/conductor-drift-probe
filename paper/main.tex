@@ -40,9 +40,11 @@ scrambled twins move the subspace as much as real dialogues, and the real-versus
 confidence intervals overlap at every layer. We report this as a cautionary, negative
 result, scoped to the models and conditions tested, and release the protocol as a tool
 for vetting representational-drift claims. \textbf{All numbers in this draft are from
-real runs on the released code; the null replicates across two model scales tested so
-far (0.5B and 1.5B parameters), and the sparse-autoencoder and larger-model cells of
-the evaluation matrix are in progress and are marked as such.}
+real runs on the released code. The null replicates across two model scales in raw
+activation space (0.5B, 1.5B) and, critically, in sparse-autoencoder feature space (the
+space disentanglement methods operate in), where the scrambled twin moves the subspace
+\emph{more} than real dialogues at the late layers. The larger-instruction-model and
+mixture-of-experts cells are in progress and are marked as such.}
 \end{abstract}
 
 \section{Introduction}
@@ -254,6 +256,20 @@ late layers, where its movement across turns is small ($\approx 0.06$). We thus 
 even measure the entanglement drift that conditional disentanglement is designed to track,
 let alone show it is large.
 
+\paragraph{Replication in SAE feature space.} Because disentanglement methods operate on
+SAE features rather than raw activations, we repeated the controlled test in the feature
+space of GPT-2 small using the publicly released residual-stream SAEs at all twelve layers
+\citep{cunningham2023sparse, bricken2023monosemanticity}, encoding each contrastive
+probe's last-token activation through the frozen SAE and recovering $H_t$ in feature
+coordinates. The verdict is unchanged: at no layer does the real between-dialogue spread
+clear the scrambled-twin spread, and at the late layers (7--11), where abstract features
+concentrate, the scrambled spread is in fact \emph{larger} than the real spread
+(e.g.\ layer 11: real $0.541$ $[0.47,0.64]$ vs scrambled $0.668$ $[0.59,0.74]$; layer 10:
+$0.515$ $[0.46,0.58]$ vs $0.659$ $[0.58,0.80]$). The apparent context-dependence is, if
+anything, \emph{better} explained by length and lexical content in feature space than in
+raw space. Thus the null is not an artifact of the activation basis: it holds in the exact
+representation conditional disentanglement would use.
+
 \section{Discussion, Scope, and Limitations}
 \label{sec:limits}
 
@@ -262,10 +278,10 @@ construction tested, three intuitive measurements of context-conditionality are
 confounded, and that the controlled measurement returns a null. It does \emph{not}
 establish that the premise is universally false. The most important open cells, which we
 are running and which any method paper relying on the premise should report, are:
-\textbf{(a)} SAE feature space rather than raw activations (the space in which
-disentanglement methods actually operate; \citealp{lieberum2024gemmascope}), where the
-basis is interpretable and a true ``feature'' may behave differently from a
-difference-of-means direction; \textbf{(b)} larger instruction-tuned models, where the
+\textbf{(a)} SAE feature space on an \emph{instruction-tuned} model (we have shown the
+null replicates in GPT-2 SAE space for the hallucination subspace; the safety side needs a
+chat model with released SAEs, e.g.\ Gemma~2 with Gemma Scope, \citealp{lieberum2024gemmascope});
+\textbf{(b)} larger instruction-tuned models, where the
 refusal direction is recoverable at more layers and the safety side becomes testable;
 \textbf{(c)} a mixture-of-experts model, for the per-expert variant of the premise;
 \textbf{(d)} higher-rank subspaces; and \textbf{(e)} a direct test of mis-specification,

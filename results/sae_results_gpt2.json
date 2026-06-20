@@ -1,0 +1,27 @@
+{
+  "backend": "gpt2",
+  "model": "gpt2",
+  "space": "SAE features (gpt2-small-res-jb, blocks.*.hook_resid_pre)",
+  "n_dialogues": 12,
+  "n_probes": 40,
+  "rank": 1,
+  "layers": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+  "content_conditional_layers": [],
+  "longest_contiguous_band": 0,
+  "verdict": "NOT_CONTENT_CONDITIONAL",
+  "note": "Run on Colab T4. Recorded from stdout; regenerate with run_scaled_sae.py --backend gpt2 --max-probes 40.",
+  "per_layer": [
+    {"layer": 0,  "real": 0.440, "real_ci": [0.26, 0.70], "scrambled": 0.440, "scrambled_ci": [0.26, 0.70], "content_significant": false},
+    {"layer": 1,  "real": 0.489, "real_ci": [0.37, 0.67], "scrambled": 0.488, "scrambled_ci": [0.38, 0.64], "content_significant": false},
+    {"layer": 2,  "real": 0.391, "real_ci": [0.27, 0.51], "scrambled": 0.376, "scrambled_ci": [0.27, 0.52], "content_significant": false},
+    {"layer": 3,  "real": 0.365, "real_ci": [0.29, 0.66], "scrambled": 0.386, "scrambled_ci": [0.32, 0.71], "content_significant": false},
+    {"layer": 4,  "real": 0.235, "real_ci": [0.19, 0.32], "scrambled": 0.243, "scrambled_ci": [0.19, 0.33], "content_significant": false},
+    {"layer": 5,  "real": 0.336, "real_ci": [0.25, 0.50], "scrambled": 0.335, "scrambled_ci": [0.26, 0.55], "content_significant": false},
+    {"layer": 6,  "real": 0.308, "real_ci": [0.25, 0.39], "scrambled": 0.375, "scrambled_ci": [0.32, 0.47], "content_significant": false},
+    {"layer": 7,  "real": 0.555, "real_ci": [0.50, 0.65], "scrambled": 0.600, "scrambled_ci": [0.55, 0.66], "content_significant": false},
+    {"layer": 8,  "real": 0.498, "real_ci": [0.45, 0.54], "scrambled": 0.510, "scrambled_ci": [0.47, 0.58], "content_significant": false},
+    {"layer": 9,  "real": 0.568, "real_ci": [0.51, 0.62], "scrambled": 0.627, "scrambled_ci": [0.57, 0.68], "content_significant": false},
+    {"layer": 10, "real": 0.515, "real_ci": [0.46, 0.58], "scrambled": 0.659, "scrambled_ci": [0.58, 0.80], "content_significant": false},
+    {"layer": 11, "real": 0.541, "real_ci": [0.47, 0.64], "scrambled": 0.668, "scrambled_ci": [0.59, 0.74], "content_significant": false}
+  ]
+}
