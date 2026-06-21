@@ -37,7 +37,9 @@ same-context floor, and a small-sample placebo comparison) are each overturned b
 next control. Under the full protocol, the apparent context-conditionality of the
 hallucination subspace is statistically indistinguishable from a length/topic artifact:
 scrambled twins move the subspace as much as real dialogues, and the real-versus-placebo
-confidence intervals overlap at every layer. Beyond the specific null, the transferable
+confidence intervals overlap at every layer. We further fit the static disentangling
+projector these methods would replace and show its across-turn re-entanglement is fully
+matched by the length/topic placebo, i.e.\ the static baseline does not genuinely fail. Beyond the specific null, the transferable
 contributions are a reusable protocol, a taxonomy of three confounds that each
 independently produce a false positive (a no-context onset, a same-context null that is
 rigged to fire, and small-sample single-dialogue effects), and a control checklist for
@@ -284,6 +286,35 @@ anything, \emph{better} explained by length and lexical content in feature space
 raw space. Thus the null is not an artifact of the activation basis: it holds in the exact
 representation conditional disentanglement would use.
 
+\paragraph{Demonstration: the static baseline does not genuinely fail.} The premise's
+operational consequence is that a \emph{static} disentangling projector, fit once, should
+fail at later turns, which is what motivates replacing it with a conditional one. We test
+this directly. The static projector built at turn 1 nulls the hallucination subspace
+$H_1$; its residual re-entanglement leak at turn $t$, the fraction of $H_t$ the frozen
+projector fails to remove, is exactly $d(H_1,H_t)\in[0,1]$, while a conditional projector
+rebuilt at turn $t$ has leak $0$ by construction. Naively the static projector looks
+broken: its leak at turn 4 is large ($0.3$--$0.6$ across layers, Figure~\ref{fig:static}).
+But the length/topic-matched scrambled twins leak \emph{just as much} (e.g.\ layer 8: real
+$0.423$ $[0.41,0.43]$ vs scrambled $0.464$ $[0.44,0.48]$; layer 12: $0.437$ vs $0.449$), so
+the ``failure'' is a length/topic artifact, not content-driven re-entanglement that a
+content-conditional projector could repair. Only $3$ of $25$ layers (all late: 18, 19, 21)
+show real leak exceeding scrambled at the dialogue-level $95\%$ level, and they are not
+contiguous, below our pre-registered $\geq 3$-contiguous-layer rule and near the
+$\approx 1.25$ layers expected by chance; we report this weak, non-robust late-layer
+elevation rather than hide it. The conclusion: for this behavior and model, a static
+projector's degradation across turns is confound-explained, so the conditional machinery
+addresses a confound rather than a real non-stationarity.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.74\linewidth]{static_projector_compare.png}
+\caption{The static disentangling projector (fit at turn 1) re-entangles substantially by
+turn 4 (leak $d(H_1,H_4)$, blue), but its length/topic-matched scrambled twin (orange) leaks
+just as much: the static baseline's apparent failure is a length/topic artifact, not
+content-driven, so a content-conditional projector would not fix it.}
+\label{fig:static}
+\end{figure}
+
 \section{Discussion, Scope, and Limitations}
 \label{sec:limits}
 
@@ -346,10 +377,13 @@ onset separately.
 disentanglement): a conditional intervention is justified only if the geometry it conditions on
 \emph{moves} with context beyond nuisance confounds, and if a static baseline \emph{fails}. We
 recommend reporting, as a precondition, (i) the controlled context-conditionality measurement
-above, in the feature space the method uses, and (ii) a static-projector baseline shown to
-re-entangle. On the present evidence neither is established, which suggests the conditional
-machinery may, for the behaviors and models studied, be addressing a confound rather than a
-real non-stationarity.
+above, in the feature space the method uses, and (ii) a static-projector baseline tested for
+content-driven re-entanglement. We carried out exactly this test (\S\ref{sec:main},
+Figure~\ref{fig:static}): the static projector's across-turn leak is fully matched by the
+length/topic placebo, so it does not genuinely fail. On the present evidence the conditional
+machinery, for the behaviors and models studied, addresses a confound rather than a real
+non-stationarity. We do not claim this generalizes to all settings; we claim that without this
+controlled check a method cannot tell the two apart, and the check is cheap.
 
 \paragraph{A reusable checklist.} The released harness packages the above as a drop-in test:
 a gauge-invariant drift metric, a scrambled-twin null, dialogue-level bootstrap CIs, a power

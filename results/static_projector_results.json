@@ -1,0 +1,368 @@
+{
+  "model": "Qwen/Qwen2.5-0.5B-Instruct",
+  "rank": 1,
+  "n_dialogues": 12,
+  "n_probes": 48,
+  "base_turn": 1,
+  "eval_turn": 4,
+  "static_projector_leak": "normalized chordal d(H_base, H_eval) in [0,1]",
+  "genuine_content_reentanglement_layers": [
+    18,
+    19,
+    21
+  ],
+  "longest_contiguous_band": 2,
+  "verdict": "STATIC_FAILURE_IS_CONFOUND",
+  "per_layer": [
+    {
+      "layer": 0,
+      "static_leak_real": 0.0,
+      "real_ci": [
+        0.0,
+        0.0
+      ],
+      "static_leak_scrambled": 0.0,
+      "scrambled_ci": [
+        0.0,
+        0.0
+      ],
+      "genuine_content_reentanglement": false
+    },
+    {
+      "layer": 1,
+      "static_leak_real": 0.35374946391841355,
+      "real_ci": [
+        0.28508219427256953,
+        0.5377317080970918
+      ],
+      "static_leak_scrambled": 0.38331662163177105,
+      "scrambled_ci": [
+        0.32591136594677445,
+        0.46123708075193376
+      ],
+      "genuine_content_reentanglement": false
+    },
+    {
+      "layer": 2,
+      "static_leak_real": 0.44486767064998933,
+      "real_ci": [
+        0.36811218644167937,
+        0.48241931359346474
+      ],
+      "static_leak_scrambled": 0.4199527592350202,
+      "scrambled_ci": [
+        0.3213535222370617,
+        0.47174623865598453
+      ],
+      "genuine_content_reentanglement": false
+    },
+    {
+      "layer": 3,
+      "static_leak_real": 0.45716040017013015,
+      "real_ci": [
+        0.4024002050237975,
+        0.4850409116616756
+      ],
+      "static_leak_scrambled": 0.43627968774220727,
+      "scrambled_ci": [
+        0.37285821109979306,
+        0.49497437745134043
+      ],
+      "genuine_content_reentanglement": false
+    },
+    {
+      "layer": 4,
+      "static_leak_real": 0.5324660351337818,
+      "real_ci": [
+        0.4835520810029486,
+        0.5498610037355903
+      ],
+      "static_leak_scrambled": 0.5355927165939205,
+      "scrambled_ci": [
+        0.4855645109874729,
+        0.5658587033415216
+      ],
+      "genuine_content_reentanglement": false
+    },
+    {
+      "layer": 5,
+      "static_leak_real": 0.5820635503680289,
+      "real_ci": [
+        0.570591259998888,
+        0.5940829841141329
+      ],
+      "static_leak_scrambled": 0.6103798188192149,
+      "scrambled_ci": [
+        0.5611345350685926,
+        0.6297008956636945
+      ],
+      "genuine_content_reentanglement": false
+    },
+    {
+      "layer": 6,
+      "static_leak_real": 0.6081530834915023,
+      "real_ci": [
+        0.5936260796078554,
+        0.6205334649539331
+      ],
+      "static_leak_scrambled": 0.6290326395598078,
+      "scrambled_ci": [
+        0.6024370346197778,
+        0.6514820904066969
+      ],
+      "genuine_content_reentanglement": false
+    },
+    {
+      "layer": 7,
+      "static_leak_real": 0.50032726694364,
+      "real_ci": [
+        0.4778953802974913,
+        0.5156343240708856
+      ],
+      "static_leak_scrambled": 0.5247568461111194,
+      "scrambled_ci": [
+        0.5076969600371394,
+        0.5613515066189614
+      ],
+      "genuine_content_reentanglement": false
+    },
+    {
+      "layer": 8,
+      "static_leak_real": 0.42318235919622205,
+      "real_ci": [
+        0.4089111613381417,
+        0.43059063573737644
+      ],
+      "static_leak_scrambled": 0.4635608911532999,
+      "scrambled_ci": [
+        0.43751637221451045,
+        0.4793962025995129
+      ],
+      "genuine_content_reentanglement": false
+    },
+    {
+      "layer": 9,
+      "static_leak_real": 0.43173001010445633,
+      "real_ci": [
+        0.42168943813797366,
+        0.4368445081270743
+      ],
+      "static_leak_scrambled": 0.4747813330191077,
+      "scrambled_ci": [
+        0.46186546595608013,
+        0.48657161600708454
+      ],
+      "genuine_content_reentanglement": false
+    },
+    {
+      "layer": 10,
+      "static_leak_real": 0.3439536848682815,
+      "real_ci": [
+        0.3279088005943675,
+        0.3547024780196301
+      ],
+      "static_leak_scrambled": 0.37312359852607246,
+      "scrambled_ci": [
+        0.3606148731867963,
+        0.3853291661617735
+      ],
+      "genuine_content_reentanglement": false
+    },
+    {
+      "layer": 11,
+      "static_leak_real": 0.3899746276514741,
+      "real_ci": [
+        0.36644531945058023,
+        0.4024825884620141
+      ],
+      "static_leak_scrambled": 0.3921306322174111,
+      "scrambled_ci": [
+        0.37249946691704117,
+        0.44287439486049823
+      ],
+      "genuine_content_reentanglement": false
+    },
+    {
+      "layer": 12,
+      "static_leak_real": 0.43691225363365477,
+      "real_ci": [
+        0.4178914329380809,
+        0.4586379902753535
+      ],
+      "static_leak_scrambled": 0.4493572333624448,
+      "scrambled_ci": [
+        0.4195108880445823,
+        0.4896629161496453
+      ],
+      "genuine_content_reentanglement": false
+    },
+    {
+      "layer": 13,
+      "static_leak_real": 0.34922646896778137,
+      "real_ci": [
+        0.32598748626496776,
+        0.3715279845644399
+      ],
+      "static_leak_scrambled": 0.35280051017985764,
+      "scrambled_ci": [
+        0.3194300990747319,
+        0.3674067782372229
+      ],
+      "genuine_content_reentanglement": false
+    },
+    {
+      "layer": 14,
+      "static_leak_real": 0.3825138557993174,
+      "real_ci": [
+        0.360616514038363,
+        0.4144515888646695
+      ],
+      "static_leak_scrambled": 0.3620739116973495,
+      "scrambled_ci": [
+        0.32188196436675665,
+        0.37761460308361283
+      ],
+      "genuine_content_reentanglement": false
+    },
+    {
+      "layer": 15,
+      "static_leak_real": 0.35605208029954616,
+      "real_ci": [
+        0.3170375654687685,
+        0.3751231406410158
+      ],
+      "static_leak_scrambled": 0.3129771233155644,
+      "scrambled_ci": [
+        0.27122714848933216,
+        0.3244291118014817
+      ],
+      "genuine_content_reentanglement": false
+    },
+    {
+      "layer": 16,
+      "static_leak_real": 0.30662218486315906,
+      "real_ci": [
+        0.27196763214110187,
+        0.33974082546412787
+      ],
+      "static_leak_scrambled": 0.25790605175158776,
+      "scrambled_ci": [
+        0.23393542916666332,
+        0.2833223301196065
+      ],
+      "genuine_content_reentanglement": false
+    },
+    {
+      "layer": 17,
+      "static_leak_real": 0.3362552386665768,
+      "real_ci": [
+        0.27581499908616786,
+        0.3646636437036628
+      ],
+      "static_leak_scrambled": 0.25410366729911266,
+      "scrambled_ci": [
+        0.23594984376568018,
+        0.2765681419669059
+      ],
+      "genuine_content_reentanglement": false
+    },
+    {
+      "layer": 18,
+      "static_leak_real": 0.3437944070753152,
+      "real_ci": [
+        0.28249159385209865,
+        0.37766818321855056
+      ],
+      "static_leak_scrambled": 0.25723073459753126,
+      "scrambled_ci": [
+        0.23515135575619117,
+        0.28245399161777013
+      ],
+      "genuine_content_reentanglement": true
+    },
+    {
+      "layer": 19,
+      "static_leak_real": 0.36747854214130526,
+      "real_ci": [
+        0.30576822594701847,
+        0.41619540438544683
+      ],
+      "static_leak_scrambled": 0.2712608113870105,
+      "scrambled_ci": [
+        0.25003564665377187,
+        0.29791372781994496
+      ],
+      "genuine_content_reentanglement": true
+    },
+    {
+      "layer": 20,
+      "static_leak_real": 0.35676686918132106,
+      "real_ci": [
+        0.29102104915444726,
+        0.40012906555669947
+      ],
+      "static_leak_scrambled": 0.26634566476616695,
+      "scrambled_ci": [
+        0.24079127378651027,
+        0.2952789936385095
+      ],
+      "genuine_content_reentanglement": false
+    },
+    {
+      "layer": 21,
+      "static_leak_real": 0.3473465497662469,
+      "real_ci": [
+        0.2857971595186629,
+        0.3802232667554176
+      ],
+      "static_leak_scrambled": 0.2582507857438811,
+      "scrambled_ci": [
+        0.22497731718486844,
+        0.28406227606485446
+      ],
+      "genuine_content_reentanglement": true
+    },
+    {
+      "layer": 22,
+      "static_leak_real": 0.36304552005188717,
+      "real_ci": [
+        0.28931956314016694,
+        0.41075892113469603
+      ],
+      "static_leak_scrambled": 0.26328047242264524,
+      "scrambled_ci": [
+        0.22956663998104704,
+        0.29484721359825905
+      ],
+      "genuine_content_reentanglement": false
+    },
+    {
+      "layer": 23,
+      "static_leak_real": 0.37657326317598405,
+      "real_ci": [
+        0.29490736743250673,
+        0.42262497284499173
+      ],
+      "static_leak_scrambled": 0.2610834678243893,
+      "scrambled_ci": [
+        0.2349367507542502,
+        0.2990644829919302
+      ],
+      "genuine_content_reentanglement": false
+    },
+    {
+      "layer": 24,
+      "static_leak_real": 0.37991412276509456,
+      "real_ci": [
+        0.28371223464211226,
+        0.4255083708670417
+      ],
+      "static_leak_scrambled": 0.25931442833380447,
+      "scrambled_ci": [
+        0.22857017258392393,
+        0.28765894588752694
+      ],
+      "genuine_content_reentanglement": false
+    }
+  ]
+}
