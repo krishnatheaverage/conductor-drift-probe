@@ -148,6 +148,11 @@ def run(args):
     model_name = args.gemma_model if (args.backend == "gemma" and args.gemma_model) else cfg["model"]
     device = "cuda" if torch.cuda.is_available() else ("mps" if torch.backends.mps.is_available() else "cpu")
     print(f"backend={args.backend} model={model_name} device={device}")
+    print("=" * 72, flush=True)
+    print("EXPECTED: ~8-12 min total, with TWO SILENT pauses -- (1) ~30-60s of Gemma weight"
+          " processing right after 'Loading weights: 100%', then (2) ~1-2 min of SAE loading."
+          " These are NORMAL. DO NOT INTERRUPT; collection lines appear after.", flush=True)
+    print("=" * 72, flush=True)
     if args.backend == "gemma":
         print("NOTE: Gemma Scope SAEs are base-model-trained; on the -it model this is a mild "
               "distribution mismatch (results indicative). See --gemma-model.")
