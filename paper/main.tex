@@ -37,9 +37,14 @@ same-context floor, and a small-sample placebo comparison) are each overturned b
 next control. Under the full protocol, the apparent context-conditionality of the
 hallucination subspace is statistically indistinguishable from a length/topic artifact:
 scrambled twins move the subspace as much as real dialogues, and the real-versus-placebo
-confidence intervals overlap at every layer. We report this as a cautionary, negative
-result, scoped to the models and conditions tested, and release the protocol as a tool
-for vetting representational-drift claims. \textbf{All numbers in this draft are from
+confidence intervals overlap at every layer. Beyond the specific null, the transferable
+contributions are a reusable protocol, a taxonomy of three confounds that each
+independently produce a false positive (a no-context onset, a same-context null that is
+rigged to fire, and small-sample single-dialogue effects), and a control checklist for
+anyone making a ``context changes the representation'' claim; we also derive an actionable
+requirement for conditional-alignment methods, namely that they report this controlled
+measurement before assuming the premise. We report the null as scoped to the models and
+conditions tested. \textbf{All numbers in this draft are from
 real runs on the released code. The null replicates across two model scales in raw
 activation space (0.5B, 1.5B) and, critically, in sparse-autoencoder feature space (the
 space disentanglement methods operate in), where the scrambled twin moves the subspace
@@ -85,13 +90,22 @@ ground truth.
 positive measurements of context-conditionality are each artifacts: a no-context onset
 jump, a same-context null that carries no length/topic variance, and a small-sample
 ($n{=}3$ dialogue) placebo comparison.
-\item \textbf{A negative finding} (\S\ref{sec:main}): under the full protocol, on the
-instruction-tuned model tested, the hallucination subspace's apparent
-context-conditionality is statistically indistinguishable from a length/topic artifact,
-and the safety/refusal subspace is not even cleanly recoverable below the mid layers, so
-the cross-subspace entanglement that conditional-disentanglement methods target cannot be
-measured where it would be needed.
+\item \textbf{A robustness finding} (\S\ref{sec:main}): under the full protocol the
+hallucination subspace's apparent context-conditionality is statistically indistinguishable
+from a length/topic artifact, and this null \emph{replicates} across two model scales in raw
+activation space and in SAE feature space, the representation conditional disentanglement
+actually uses; the safety/refusal subspace is not even cleanly recoverable below the mid
+layers, so the targeted cross-subspace entanglement cannot be measured where it would be
+needed.
+\item \textbf{Actionable recommendations} (\S\ref{sec:lessons}): a control checklist for
+representational-drift claims, and the requirement that conditional-alignment methods report
+the controlled premise measurement (and a failing static baseline) before introducing
+conditional machinery.
 \end{itemize}
+
+We frame this as a robustness/methodology study rather than a single negative number: the
+generalizable output is the protocol, the confound taxonomy, and the recommendations, with
+the replicated null as the evidence that they matter.
 
 Our claim is deliberately scoped: we do not claim the premise is false for all models or
 in SAE feature space. We claim that the premise is \emph{not supported} by the obvious
@@ -299,6 +313,49 @@ or disentanglement; it is a request that such methods measure, with controls, th
 they assume. A static intervention is mis-specified only if the geometry it freezes
 actually moves with context beyond length and topic. On the present evidence, the cheap
 and decisive thing is to run the controlled measurement first.
+
+\section{Lessons and Actionable Recommendations}
+\label{sec:lessons}
+
+The point of this study is not the single null but the transferable lessons that produced
+it; we state them as recommendations for two audiences.
+
+\paragraph{For anyone measuring whether a manipulation changes a representation}
+(context, in-context examples, a steering edit, a fine-tune), the following four controls
+flip conclusions in practice and should be standard:
+\begin{enumerate}
+\item \textbf{Use a matched-null, not a same-condition resampling floor.} A bootstrap over
+probes at a fixed condition contains none of the between-condition variance (length, position,
+topic) that the test statistic carries, so ``effect $>$ floor'' is near-tautological. Build a
+null that matches the nuisance variables and differs only in the variable of interest (here,
+length/topic-matched scrambled twins). This single change converted our headline from
+positive to null.
+\item \textbf{Measure with a gauge-invariant quantity.} Subspaces are recovered up to an
+arbitrary basis; a basis-dependent ``drift'' conflates estimator gauge with real movement.
+Use principal-angle/chordal distances.
+\item \textbf{Bootstrap over the unit of generalization, not the convenient one.} A
+confidence interval over probes says nothing about generalization across dialogues; resample
+the dialogues. Our mid-layer ``effect'' was significant over probes and vanished over
+dialogues ($n{=}3 \to n{=}12$).
+\item \textbf{Baseline away trivial transitions.} The no-context$\to$context jump is large,
+shared, and uninteresting; measure drift relative to the first in-context turn, and report the
+onset separately.
+\end{enumerate}
+
+\paragraph{For designers of conditional alignment methods} (conditional steering, conditional
+disentanglement): a conditional intervention is justified only if the geometry it conditions on
+\emph{moves} with context beyond nuisance confounds, and if a static baseline \emph{fails}. We
+recommend reporting, as a precondition, (i) the controlled context-conditionality measurement
+above, in the feature space the method uses, and (ii) a static-projector baseline shown to
+re-entangle. On the present evidence neither is established, which suggests the conditional
+machinery may, for the behaviors and models studied, be addressing a confound rather than a
+real non-stationarity.
+
+\paragraph{A reusable checklist.} The released harness packages the above as a drop-in test:
+a gauge-invariant drift metric, a scrambled-twin null, dialogue-level bootstrap CIs, a power
+curve, and a synthetic ground-truth validation, with a single backend swap between raw
+activations and SAE features. The intended use is pre-registration: run it, report the
+controlled measurement and the power, and only then build (or not).
 
 \section{Conclusion}
 
