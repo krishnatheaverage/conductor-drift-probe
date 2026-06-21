@@ -161,7 +161,10 @@ def run(args):
     if cfg.get("no_processing"):
         # skips the slow LayerNorm-folding step (avoids the Gemma-2 load hang) AND matches
         # how the Gemma Scope SAEs were trained (resolves the distribution-mismatch caveat).
-        model = HookedTransformer.from_pretrained_no_processing(model_name, device=device)
+        # bfloat16 is required for Gemma-2 (fp16 overflows to NaN via its logit soft-capping);
+        # bf16 is native only on Ampere+ (A100/L4), so use one of those, not a T4.
+        model = HookedTransformer.from_pretrained_no_processing(
+            model_name, device=device, dtype="bfloat16")
     else:
         model = HookedTransformer.from_pretrained(model_name, device=device)
     print("model ready", flush=True)
