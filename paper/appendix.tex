@@ -1,0 +1,123 @@
+\appendix
+
+\section{Synthetic Validation Details}
+\label{app:synth}
+
+The synthetic test (Table~\ref{tab:synth}) runs with no model and no network and reproduces on
+any machine, so it isolates the estimator and decision rule from any property of a particular
+language model. We construct paired activations whose contrast subspace is an analytically
+known object, then check four properties.
+
+\paragraph{Construction.} For each turn we draw class-conditional activation clouds whose
+difference-of-means defines a rank-$k$ ground-truth subspace with a prescribed orientation.
+Two ground-truth trajectories are used: a \emph{static} subspace whose orientation is fixed
+across turns, and a \emph{rotating} subspace whose orientation advances by a fixed
+$15^\circ$ per turn. Estimation noise is controlled by the number of probe pairs, matching the
+power regime used on real data (\S\ref{sec:res-power}).
+
+\paragraph{What it confirms.} (i) At high SNR the estimator recovers the injected subspace.
+(ii) The static trajectory returns measured drift at the bootstrap noise floor, and the
+decision rule returns negative, the property that prevents a low-power run from being read as a
+positive. (iii) The $15^\circ$/turn rotation is recovered as noise-corrected chordal drift
+$0.144$ against the analytic $0.149$, clears the floor, and the rule
+returns positive; a cross-subspace overlap with a known time-varying relative angle is tracked
+over the same trajectory. (iv) Principal-angle sanity: identical planes return $0$, orthogonal
+planes return $\pi/2$. Because the identical code path is used on real data, a verdict on a real
+model reflects the data rather than a code artifact.
+
+\section{Evaluation Matrix: Done and Pending}
+\label{app:matrix}
+
+Table~\ref{tab:matrix} records the evaluation matrix. The acceptance risk for a scoped negative
+is not novelty but breadth, the objection that the effect was missed because of the wrong model,
+space, or rank; we therefore enumerate the cells that close that objection and mark each as done
+or pending, with the released harness producing the statistic for both. The single most
+important pending cell is the safety subspace in SAE feature space on an instruction-tuned chat
+model (e.g.\ Gemma~2 with Gemma Scope, \citealp{lieberum2024gemmascope}). It is supported by the
+released harness but is pending larger compute: a \texttt{transformer\_lens} plus Gemma-2 load
+issue prevented it on the available T4, and it is expected to complete on an A100-class GPU. We
+mark it pending rather than report it.
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{@{}llc@{}}
+\toprule
+Cell & Objection it closes & Status \\
+\midrule
+Qwen2.5-0.5B-Instruct, raw acts, rank-1 & baseline & done \\
+Qwen2.5-1.5B-Instruct, raw acts, rank-1 & ``only the smallest model'' & done \\
+GPT-2 small, SAE feature space, rank-1 & ``raw acts aren't where methods operate'' & done \\
+static-projector demonstration (Qwen2.5-0.5B) & ``you never tested the actual claim'' & done \\
+safety subspace in SAE space, instruction-tuned (Gemma-2 + Gemma Scope) & SAE safety side on a chat model & pending (A100) \\
+mixture-of-experts model (per-expert premise) & per-expert variant of the premise & pending \\
+rank-$2$/$3$ subspaces & ``rank-1 is too crude'' & pending (needs hundreds of probes) \\
+within-topic content control & ``topic conflated with content'' & pending \\
+behavioral (generation-time) static-projector test & generation-time mis-specification & pending (future work) \\
+\bottomrule
+\end{tabular}
+\caption{Evaluation matrix. Raw-activation replication across two model scales and the SAE
+feature-space replication (GPT-2) are complete, as is the static-projector demonstration. The
+instruction-tuned SAE cell for the safety subspace is supported by the released harness but
+pending a larger GPU. The protocol ports to every pending cell with only a backend swap.}
+\label{tab:matrix}
+\end{table}
+
+\section{Probe-Bank Construction}
+\label{app:probes}
+
+\paragraph{Contrastive pairs.} Subspaces are recovered by contrast, following standard practice
+in the probing and steering literature. The \emph{hallucination/epistemic} subspace $H_t$ is the
+rank-1 difference-of-means direction between answerable real-entity questions and surface-matched
+unanswerable fictional-entity questions, following the knowledge-awareness construction of
+\citet{ferrando2025entity}. The \emph{safety} subspace $S_t$ is the analogous contrast between
+harmful requests and surface-matched harmless requests, the refusal direction of
+\citet{arditi2024refusal}. Pairs are surface-matched so that the recovered direction isolates the
+epistemic or safety contrast rather than lexical or syntactic differences.
+
+\paragraph{Fixed probes, varying context.} At dialogue turn $t$ we prepend the running
+conversation (the first $t$ user turns, each followed by a fixed neutral assistant reply) and
+append the contrastive probe bank as the next user turn, reading the last-token residual
+activation at each layer. The probes are held fixed and only the prepended context varies, so any
+movement in the recovered $U_t$ is attributable to context.
+
+\paragraph{Power-driven sizing.} The power analysis (\S\ref{sec:res-power}) requires $\geq 96$
+probe pairs per side at rank-1; we use $40$--$96$ pairs per side in the reported runs. The
+deliberately small banks used for laptop development are not large enough for a publishable
+verdict, which is precisely why the floor is reported with every drift.
+
+\paragraph{Scrambled-twin null.} The length- and topic-matched null is generated by
+word-shuffling each user turn. This preserves the exact token multiset (and hence length, topic,
+and lexicon) while destroying coherent meaning, so genuine content-conditionality requires the
+real subspace to move more than its scrambled twin. As noted in the scope discussion, the
+scrambled twin holds topic fixed but conflates coherent dialogue content with epistemic state; a
+fully within-topic manipulation (a pending cell) would separate the two.
+
+\section{Reproducibility Statement}
+\label{app:repro}
+
+All code, probe banks, dialogue scripts, cached activations, and the synthetic ground-truth
+validation are released in a public repository. Every figure and number in this paper, including
+the synthetic validation (Table~\ref{tab:synth}), the power curve (Table~\ref{tab:power}), the
+rigor cascade (Table~\ref{tab:cascade}), the controlled result and its cross-model and
+SAE-feature-space replications (Tables~\ref{tab:qwen05}--\ref{tab:gpt2sae}), the static-projector
+demonstration (Table~\ref{tab:static}), and Figures~\ref{fig:scaled}, \ref{fig:placebo}, and
+\ref{fig:static}, is regenerated by the released scripts.
+
+\paragraph{Pipeline.} The estimator and decision rule are validated with a model-free synthetic
+test that reproduces anywhere. Activation extraction reads the last-token residual stream at each
+layer; the SAE-feature-space backend passes that activation through the frozen released SAE
+encoder and runs the identical contrast-and-drift pipeline on the feature vector, so the only
+change between the raw and SAE settings is a backend swap. Drift is computed as the
+gauge-invariant chordal distance with dialogue-level bootstrap confidence intervals, and the
+pre-registered decision rule (real CI lower bound $>$ scrambled CI upper bound over a
+$\geq 3$-contiguous-layer band) is applied uniformly across all settings.
+
+\paragraph{Determinism and scope.} Random seeds for the bootstrap and for synthetic data
+generation are fixed, so the reported intervals reproduce. The released harness packages the
+gauge-invariant drift metric, the scrambled-twin null, dialogue-level bootstrap CIs, the power
+curve, and the synthetic validation as a drop-in test with a single backend swap between raw
+activations and SAE features, so that a representational-drift claim, positive or negative, can be
+vetted before it is built upon. All results are scoped to the models and feature spaces evaluated
+here, \texttt{Qwen2.5-0.5B-Instruct} and \texttt{Qwen2.5-1.5B-Instruct} in raw activation space and
+GPT-2 small in SAE feature space; we do not claim the verdict generalizes beyond them.

@@ -1,0 +1,276 @@
+\section{Method}
+\label{sec:method}
+
+We study a single, precise question: does dialogue context rotate the low-dimensional
+residual-stream subspaces that encode hallucination/epistemic state and safety/refusal,
+beyond what is explained by trivial nuisance variables (prompt length, final-token
+position, and surface topic)? This section defines the estimator, the gauge-invariant
+drift metric, the projector-leak identity that operationalizes ``a static intervention is
+mis-specified,'' the three confounds and their controls, and the pre-registered decision
+rule. Throughout, a residual activation is $x \in \mathbb{R}^d$, read at the last token of
+a prompt at a fixed layer.
+
+\subsection{Subspace estimation by contrast}
+\label{sec:subspace}
+
+At dialogue turn $t$ we form a prompt by prepending the running conversation (the first
+$t$ user turns, each followed by a fixed, neutral assistant reply that carries no
+task-relevant content) and appending a held-out contrastive probe as the next user turn.
+The conversation context is the \emph{only} thing that varies across turns: the probe bank
+is fixed across all turns and all dialogues, so any movement we measure in the recovered
+subspace is attributable to the prepended context rather than to a change of probes.
+
+We recover concept subspaces by contrastive difference-of-means, the standard construction
+behind linear probing and steering directions
+\citep{marks2023geometry, arditi2024refusal, panickssery2024caa}. For the
+\emph{hallucination/epistemic} subspace $H_t$ we use answerable real-entity questions
+paired with surface-matched unanswerable fictional-entity questions, the
+knowledge-awareness contrast of \citet{ferrando2025entity}; for the \emph{safety} subspace
+$S_t$ we use harmful requests paired with surface-matched harmless requests, the refusal
+contrast of \citet{arditi2024refusal}. Let $\{(x_i^{+}, x_i^{-})\}_{i=1}^{n}$ be the
+last-token activations of the $n$ matched pairs at turn $t$, and let
+$\delta_i = x_i^{+} - x_i^{-}$ be the per-pair difference vectors. Stacking the (centered)
+$\delta_i$ into $D \in \mathbb{R}^{n \times d}$, we take $U_t \in \mathbb{R}^{d \times k}$
+to be an orthonormal basis for the top-$k$ right singular vectors of $D$ (equivalently the
+top-$k$ eigenvectors of $\sum_i \delta_i \delta_i^\top$). The default is the rank-1
+difference-of-means direction, $k=1$, normalized to unit length;
+Section~\ref{sec:power} explains why higher rank is not usable at our probe budgets. Pairing
+removes the content the two sides share by construction, so $U_t$ isolates the concept axis
+(epistemic status, or harmfulness) rather than the surface form of the probe.
+
+\subsection{Gauge-invariant chordal drift}
+\label{sec:drift}
+
+A difference-of-means subspace is recovered only up to an arbitrary orthonormal basis: the
+estimator returns \emph{a} basis $U_t$ for the plane $\mathrm{span}(U_t)$, and any
+$U_t R$ with $R \in O(k)$ spans the same plane. A drift metric must therefore be a
+function of the planes, not of the bases. Given two $k$-planes with orthonormal bases
+$U, V \in \mathbb{R}^{d \times k}$, let $\theta_1, \dots, \theta_k$ be their principal
+angles, defined through the singular values $\sigma_i = \cos\theta_i$ of $U^\top V$
+\citep{edelman1998geometry}. We measure drift by the normalized chordal distance
+\begin{equation}
+\label{eq:chordal}
+d(U, V) \;=\; \sqrt{\frac{1}{k} \sum_{i=1}^{k} \sin^2 \theta_i} \;\in\; [0, 1],
+\end{equation}
+which is $0$ when the planes coincide ($\theta_i = 0$ for all $i$) and $1$ when they are
+orthogonal ($\theta_i = \pi/2$).
+
+\paragraph{Derivation of the projector form and basis-invariance.} The quantity in
+\eqref{eq:chordal} equals a Frobenius distance between the two orthogonal projectors
+$P_U = U U^\top$ and $P_V = V V^\top$, which makes its basis-invariance manifest. Using
+$\|A\|_F^2 = \mathrm{tr}(A^\top A)$ and that projectors are symmetric idempotents
+($P_U^\top P_U = P_U$, $\mathrm{tr}\,P_U = k$),
+\begin{equation}
+\label{eq:projexpand}
+\| P_U - P_V \|_F^2
+= \mathrm{tr}(P_U) + \mathrm{tr}(P_V) - 2\,\mathrm{tr}(P_U P_V)
+= 2k - 2\,\mathrm{tr}(U U^\top V V^\top).
+\end{equation}
+The cross term is $\mathrm{tr}(U U^\top V V^\top) = \| U^\top V \|_F^2 = \sum_i \sigma_i^2
+= \sum_i \cos^2\theta_i$, the sum of squared principal-angle cosines. Substituting and
+using $\sin^2\theta_i = 1 - \cos^2\theta_i$,
+\begin{equation}
+\label{eq:projid}
+\| P_U - P_V \|_F^2 = 2k - 2 \sum_{i} \cos^2\theta_i = 2 \sum_{i} \sin^2\theta_i
+\quad\Longrightarrow\quad
+d(U, V) = \frac{1}{\sqrt{2k}}\, \| U U^\top - V V^\top \|_F .
+\end{equation}
+The right-hand side depends only on the projectors $P_U, P_V$, which are themselves
+invariant to the choice of basis within each plane ($U R$ gives $U R R^\top U^\top =
+U U^\top$ for $R \in O(k)$). Hence $d(U, V)$ is exactly the gauge-invariant principal-angle
+quantity, and substituting an arbitrary estimator basis cannot change it. We also use the
+cross-subspace overlap
+\begin{equation}
+\label{eq:omega}
+\Omega(S_t, H_t) \;=\; \frac{1}{k}\, \big\| U_S^\top U_H \big\|_F^2 \;\in\; [0, 1],
+\end{equation}
+(with $U_S = U_t^{S}$, $U_H = U_t^{H}$) where $\Omega = 1$ means the safety and
+hallucination planes coincide and $\Omega = 0$ means they are orthogonal; $\Omega$ is the
+quantity a static orthogonalizer drives to zero once, and by the same projector argument it
+is basis-invariant.
+
+\subsection{The static-projector leak identity}
+\label{sec:leak}
+
+The operational claim behind conditional disentanglement is that a \emph{static}
+intervention learned at one turn is mis-specified at later turns. We make this measurable
+with an exact identity. Suppose at turn $1$ we fit a static projector that nulls the
+hallucination subspace, $\Pi_1 = I - U_1 U_1^\top$ with $U_1 = U_1^{H}$ (orthonormal,
+$k=1$ by default). At a later turn $t$ the concept has moved to $H_t = \mathrm{span}(U_t)$,
+and the \emph{re-entanglement leak} is the fraction of a unit vector along $U_t$ that the
+frozen projector fails to remove. The surviving component is
+$\Pi_1 U_t = U_t - U_1 (U_1^\top U_t)$, with squared norm
+\begin{equation}
+\label{eq:leak}
+\| \Pi_1 U_t \|_F^2 = \| U_t \|_F^2 - \| U_1^\top U_t \|_F^2
+= k - \sum_i \cos^2 \theta_i = \sum_i \sin^2 \theta_i,
+\end{equation}
+so the root-mean-square surviving fraction is
+$\sqrt{\tfrac{1}{k}\sum_i \sin^2\theta_i} = d(U_1, U_t) = d(H_1, H_t)$, exactly the chordal
+drift of \eqref{eq:chordal}. In words, the static projector that nulls $H_1$ leaves a
+residual on $H_t$ whose RMS magnitude is precisely the principal-angle drift between the
+two subspaces, because the surviving fraction along each principal direction is the sine of
+its principal angle. A conditional projector rebuilt at turn $t$ has leak $0$ by
+construction. This identity lets us evaluate a static baseline's degradation directly from
+the drift metric, and crucially lets us subject that degradation to the same
+matched-null control as the drift itself (Section~\ref{sec:controls}).
+
+\subsection{Three confounds and their controls}
+\label{sec:controls}
+
+``The subspace moved with context'' is easy to measure badly. Three confounds dominate a
+naive measurement, and each, left uncontrolled, produces a false positive
+(Section~\ref{sec:cascade}). Each has an explicit control.
+
+\paragraph{(1) No-context onset.} Turn $0$ has no prepended context, so the cumulative
+drift $d(U_0, U_t)$ is dominated by the generic transition from a bare probe to a
+probe-in-context, a large displacement that is shared across all dialogues and carries no
+content-conditional information. \emph{Control:} take the baseline at turn $1$ (the first
+in-context turn) and measure $d(U_1, U_t)$, reporting the onset $d(U_0, U_1)$ separately.
+
+\paragraph{(2) Token length and final-token position.} As a dialogue accumulates, the
+prompt grows monotonically, and the last-token activation of a position-encoded model
+shifts with absolute prompt length even at fixed semantic content. \emph{Control:} a
+\textbf{scrambled-twin null}. For each user turn we word-shuffle the tokens, producing a
+twin that preserves the \emph{exact} token multiset (hence identical length, lexical
+content, and bag-of-words topic) while destroying coherent meaning. Genuine
+content-conditionality requires the real subspace to move \emph{more} than its
+length/topic-matched scrambled twin; if the two move equally, the movement is a length/topic
+artifact rather than a content effect. The scrambled twin is the load-bearing control of
+this study.
+
+\paragraph{(3) Single-dialogue idiosyncrasy.} A between-dialogue spread computed from a
+handful of dialogues can be carried by a single topically-divergent script.
+\emph{Control:} a dialogue-level bootstrap confidence interval, resampling whole dialogues
+(not just probes within a dialogue), so the reported uncertainty reflects generalization
+across dialogues.
+
+\paragraph{Why the same-context bootstrap floor is the wrong null.} A tempting null is to
+draw two independent bootstrap resamples of the \emph{same} probe set at a \emph{fixed}
+context and call their drift the noise floor, then declare an effect whenever the
+between-dialogue spread exceeds that floor. This is the wrong comparison for a
+between-context statistic, and the error is structural rather than a matter of sample size.
+The between-dialogue spread is a function of variation \emph{across} contexts: it contains
+all of the length, position, and topic variance that differs from one dialogue (or turn) to
+another. The same-context floor, by construction, resamples probes within one fixed context
+and therefore contains \emph{zero} between-context variance: it measures only
+probe-estimation noise. Comparing a statistic that carries between-condition nuisance
+variance against a floor that carries none makes ``spread $>$ floor'' near-tautological; it
+will fire on length and topic alone, with no coherent content involved. The correct null is
+one that \emph{matches} the nuisance variables (length, position, topic) and differs only in
+the variable of interest (coherent meaning), which is exactly what the scrambled twin
+provides. This single substitution, same-context floor $\rightarrow$ scrambled-twin null, is
+what converts our headline from positive to null (Section~\ref{sec:cascade}).
+
+\subsection{Dialogue-level bootstrap and the pre-registered decision rule}
+\label{sec:rule}
+
+For each layer and each condition (real, scrambled) we compute the median pairwise
+between-dialogue chordal spread of the final-turn (full-context) subspaces, and bracket it
+with a $95\%$ confidence interval obtained by resampling dialogues with replacement
+(dialogue-level bootstrap). The decision rule is fixed in advance:
+\begin{quote}
+A layer is \emph{content-conditional} iff the real between-dialogue spread's CI lower bound
+exceeds the scrambled-twin spread's CI upper bound. The model/space is judged
+\textsc{content\_conditional} iff there is a contiguous band of $\geq 3$ such layers;
+otherwise the verdict is \textsc{not\_content\_conditional}.
+\end{quote}
+The contiguity requirement guards against isolated layers that clear the bar by chance:
+with per-layer false-positive risk near the nominal level, the expected number of
+single-layer crossings over a network is non-negligible, but a run of three contiguous
+crossings is not. We report the realized per-layer comparisons and the floor regardless of
+the verdict, so a null is never confused with an under-powered run.
+
+\subsection{Validation against analytic ground truth}
+\label{sec:validation}
+
+We validate the estimator and metric on synthetic activations with a known contrast
+subspace that we rotate by a prescribed angle per turn. Three checks pass. (i)
+\emph{Principal-angle sanity:} identical subspaces return $d = 0$ and orthogonal subspaces
+return principal angles of $\pi/2$ (so $d = 1$), confirming the implementation of
+\eqref{eq:chordal}. (ii) \emph{Recovery of an injected rotation:} a $15^\circ$-per-turn
+injected rotation is recovered as noise-corrected drift $0.144$, against the analytic value
+$0.149$. (iii) \emph{Correct negative:} a static (zero-rotation) subspace returns drift at
+the bootstrap noise floor, i.e.\ a correctly \textsc{negative} verdict. The same code paths
+are used for the real-model runs, so the protocol is calibrated to call both a true effect
+and a true null.
+
+\subsection{Statistical power and the rank/probe budget}
+\label{sec:power}
+
+Subspace estimation in $d \approx 10^3$ activation space is noisy, and the noise floor of
+the chordal drift scales like $1/\sqrt{n_{\text{probes}}}$. On
+\texttt{Qwen2.5-0.5B-Instruct} (raw activations, rank-1) the $95\%$ bootstrap floor falls
+from $0.49$ at $16$ probes, to $0.31$ at $32$, $0.25$ at $64$, and $0.22$ at $96$ probes
+(Table~\ref{tab:power}). Higher rank is not usable at these budgets: rank-2 and rank-3
+subspaces estimated from a few dozen probes have a floor near $0.7$, meaning two bootstrap
+estimates of the \emph{same} subspace come out nearly orthogonal, i.e.\ pure noise. We
+therefore fix the default to rank-1 difference-of-means directions with $40$--$96$ probe
+pairs per side, and we report the floor alongside every result so that a null is never
+mistaken for an under-powered run.
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+$n_{\text{probes}}$ & 16 & 32 & 64 & 96 & scaling \\
+\midrule
+rank-1 floor (95\%) & 0.49 & 0.31 & 0.25 & 0.22 & $\sim 1/\sqrt{n_{\text{probes}}}$ \\
+\bottomrule
+\end{tabular}
+\caption{Bootstrap noise floor of the rank-1 chordal drift on
+\texttt{Qwen2.5-0.5B-Instruct} (raw activations) as a function of the number of probe pairs.
+The floor scales as $1/\sqrt{n_{\text{probes}}}$. Rank-2/3 from a few dozen probes sits at a
+floor $\approx 0.7$ (pure noise), so we use rank-1 with $40$--$96$ probes.}
+\label{tab:power}
+\end{table}
+
+\section{Experimental Setup}
+\label{sec:setup}
+
+\paragraph{Models and representations.} We evaluate three settings, chosen to separate the
+null from any single model scale or activation basis. (i) \texttt{Qwen2.5-0.5B-Instruct}
+\citep{qwen25}, raw residual activations, $24$ layers (cached $896$-dimensional last-token
+states). (ii) \texttt{Qwen2.5-1.5B-Instruct} \citep{qwen25}, raw residual activations, $28$
+layers. (iii) \texttt{GPT-2} small in \emph{SAE feature space}, using the publicly released
+\texttt{gpt2-small-res-jb} residual-stream sparse autoencoders at all $12$ layers
+\citep{cunningham2023sparse, bricken2023monosemanticity}: each contrastive probe's
+last-token activation is encoded through the frozen SAE and the subspace is recovered in
+feature coordinates. The third setting is the one that matters for the methods we test:
+conditional disentanglement operates on SAE features, not raw activations
+\citep{mahmoud2025unintended}, so a null in raw space alone would be inconclusive. We read
+the last-token activation \emph{per layer}, indexing the last token before stacking hidden
+states, and recover $U_t$ at each layer independently.
+
+\paragraph{Contrastive probe construction.} The hallucination/epistemic probe bank pairs
+answerable real-entity questions with surface-matched unanswerable fictional-entity
+questions \citep{ferrando2025entity}; the matching holds the question template, syntax, and
+length fixed across the pair, so the difference vector isolates epistemic status rather than
+surface form. The safety probe bank pairs harmful requests with surface-matched harmless
+requests \citep{arditi2024refusal}, matched the same way. We use rank-1 difference-of-means
+directions and $40$--$96$ probe pairs per side (Section~\ref{sec:power}), reading the
+last-token residual at every layer. The probe banks are fixed across all turns and
+dialogues, so the only thing that varies within a dialogue is the prepended context.
+
+\paragraph{Dialogues and the scrambled twin.} We use $12$ topically diverse multi-turn
+dialogues (five user turns each, each followed by a fixed neutral assistant reply). For
+each real dialogue we construct its \textbf{scrambled twin} by word-shuffling each user
+turn, which holds the token multiset (length, lexicon, and bag-of-words topic) exactly fixed
+while destroying coherent meaning (Section~\ref{sec:controls}). Twelve dialogues is the
+operative sample for the dialogue-level bootstrap; the rigor cascade
+(Section~\ref{sec:cascade}) shows that the smaller $n{=}3$ placebo is under-supported and can
+manufacture a spurious mid-layer effect, which is why the controlled runs use $n{=}12$.
+
+\paragraph{Headline statistic.} For each setting we take, at every layer, each dialogue's
+final-turn (full-context) hallucination subspace, compute the median pairwise
+between-dialogue chordal spread, bracket it with a dialogue-level $95\%$ bootstrap CI, and
+compare it against the scrambled-twin spread CI under the decision rule of
+Section~\ref{sec:rule}. For the static-projector demonstration we instead report the leak
+$d(H_1, H_t)$ of \eqref{eq:leak} against its scrambled twin, under the same rule. The
+safety subspace $S_t$ is recovered identically; on the models we evaluate it is poorly
+recoverable below the mid layers (its same-subspace floor reaches $\approx 1.0$), so
+$\Omega(S_t, H_t)$ is meaningful only at late layers, a scope limitation we state with each
+safety-side result. All numbers reported in this paper are from real runs on the released
+harness; every figure and number is regenerated by the released scripts, with raw
+activations and SAE features differing only by a backend swap.
