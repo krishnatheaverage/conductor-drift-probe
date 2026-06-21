@@ -152,11 +152,17 @@ def run(args):
         print("NOTE: Gemma Scope SAEs are base-model-trained; on the -it model this is a mild "
               "distribution mismatch (results indicative). See --gemma-model.")
     from transformer_lens import HookedTransformer
+    print("loading model (this downloads weights on first run) ...", flush=True)
     model = HookedTransformer.from_pretrained(model_name, device=device)
     layers = cfg["layers"]
-    saes = {l: load_sae(cfg["release"], cfg["sae_id"](l), device) for l in layers}
+    print(f"loading {len(layers)} SAEs (each ~150-300MB on first run; this phase can be "
+          f"quiet for a minute, do NOT interrupt) ...", flush=True)
+    saes = {}
+    for l in layers:
+        saes[l] = load_sae(cfg["release"], cfg["sae_id"](l), device)
+        print(f"  SAE layer {l} ready", flush=True)
     hooks = {l: sae_hook_name(saes[l]) for l in layers}
-    print(f"loaded {len(saes)} SAEs at layers {layers}")
+    print(f"loaded {len(saes)} SAEs at layers {layers}; starting collection", flush=True)
 
     unc = P.UNCERTAINTY_PAIRS_BIG[: args.max_probes]
     saf = P.SAFETY_PAIRS_BIG[: args.max_probes]
