@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+\begin{axis}[width=0.92\linewidth,height=5.2cm,xlabel={layer},ylabel={between-dialogue spread},ymin=0, xmin=1,xmax=24,grid=both,grid style={line width=.2pt,draw=gray!18},major grid style={line width=.3pt,draw=gray!30},tick align=outside,tick style={gray!50},axis line style={gray!55},legend style={font=\footnotesize,draw=gray!40,fill=white,fill opacity=0.85,text opacity=1},legend cell align=left,legend pos=north east,label style={font=\small},tick label style={font=\footnotesize}]
+\addplot[blue!70!black,thick,mark=*,mark size=1.1pt] coordinates {(1,0.321) (2,0.419) (3,0.397) (4,0.367) (5,0.396) (6,0.452) (7,0.388) (8,0.346) (9,0.328) (10,0.272) (11,0.410) (12,0.510) (13,0.475) (14,0.503) (15,0.455) (16,0.366) (17,0.353) (18,0.351) (19,0.375) (20,0.351) (21,0.332) (22,0.329) (23,0.337) (24,0.300)};
+\addlegendentry{real (content)}
+\addplot[orange!75!black,thick,densely dashed,mark=square*,mark size=1.1pt] coordinates {(1,0.380) (2,0.453) (3,0.441) (4,0.444) (5,0.442) (6,0.522) (7,0.412) (8,0.371) (9,0.364) (10,0.290) (11,0.345) (12,0.388) (13,0.306) (14,0.306) (15,0.256) (16,0.209) (17,0.225) (18,0.222) (19,0.240) (20,0.234) (21,0.240) (22,0.256) (23,0.254) (24,0.264)};
+\addlegendentry{scrambled (length+topic)}
+\addplot[gray,dotted,thick] coordinates {(1,0.276) (2,0.225) (3,0.216) (4,0.249) (5,0.291) (6,0.364) (7,0.301) (8,0.303) (9,0.297) (10,0.222) (11,0.242) (12,0.224) (13,0.180) (14,0.170) (15,0.209) (16,0.163) (17,0.157) (18,0.158) (19,0.165) (20,0.174) (21,0.312) (22,0.359) (23,0.392) (24,0.276)};
+\addlegendentry{no-change floor}
+\end{axis}
+\end{tikzpicture}

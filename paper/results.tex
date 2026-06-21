@@ -1,12 +1,12 @@
 % =====================================================================
-%  EXPANDED RESULTS SECTION (replaces the short \section{Controlled Result})
+% EXPANDED RESULTS SECTION (replaces the short \section{Controlled Result})
 % =====================================================================
 \section{Results}
 \label{sec:main}
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.78\linewidth]{scaled_compare.png}
+\input{fig_scaled.tex}
 \caption{Controlled result ($n{=}12$ dialogues, dialogue-level 95\% CIs). Real (blue) and
 scrambled-twin (orange) between-dialogue spread bands overlap at every layer: coherent
 content adds nothing detectable beyond the length/topic that the scrambled twin already
@@ -17,7 +17,7 @@ positive.}
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.70\linewidth]{placebo_compare.png}
+\input{fig_placebo.tex}
 \caption{The $n{=}3$ placebo that the controlled result overturns. Early layers (1--10):
 scrambled $\geq$ real (a length/lexical artifact). Mid-late layers (11--21): real $>$
 scrambled, which \emph{looked} like a content effect but, lacking a dialogue-level CI,
@@ -27,7 +27,7 @@ was a small-sample artifact (Figure~\ref{fig:scaled}).}
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.74\linewidth]{static_projector_compare.png}
+\input{fig_static.tex}
 \caption{The static disentangling projector (fit at turn 1) re-entangles substantially by
 turn 4 (leak $d(H_1,H_4)$, blue), but its length/topic-matched scrambled twin (orange) leaks
 just as much: the static baseline's apparent failure is a length/topic artifact, not
@@ -56,8 +56,7 @@ Before touching a model we confirm that the pipeline measures what it claims to.
 paired activations whose contrast subspace is an analytically controlled object and check
 that the estimator and the decision rule behave correctly in three regimes
 (Table~\ref{tab:synth}). With a known $15^\circ$/turn rotation injected into the contrast
-subspace, the noise-corrected chordal drift is $0.144$ against the analytic value $0.149$,
-a $3.4\%$ relative error, and the decision rule fires positive. With a static (zero-rotation)
+subspace, the noise-corrected chordal drift is $0.144$ against the analytic value $0.149$, and the decision rule fires positive. With a static (zero-rotation)
 subspace the measured drift collapses to the bootstrap noise floor and the rule correctly
 returns negative, the property that protects against calling an under-powered run a real
 effect. The principal-angle routine returns $0$ for identical planes and $\pi/2$ for
@@ -292,7 +291,7 @@ confound rather than a real non-stationarity.
 \toprule
 Layer & Real leak $d(H_1,H_t)$ $[95\%\ \text{CI}]$ & Scrambled leak $[95\%\ \text{CI}]$ & Real $>$ scrambled? \\
 \midrule
-$8$  & $0.423$ $[0.41,0.43]$ & $0.464$ $[0.44,0.48]$ & no \\
+$8$ & $0.423$ $[0.41,0.43]$ & $0.464$ $[0.44,0.48]$ & no \\
 $12$ & $0.437$ & $0.449$ & no \\
 \midrule
 \multicolumn{4}{@{}l}{Only $3/25$ layers (late: $18,19,21$) cross the dialogue-level bar; \emph{not} contiguous ($\geq 3$ rule unmet; chance $\approx 1.25$).} \\
@@ -313,5 +312,5 @@ context-conditionality of the hallucination subspace is statistically indistingu
 length and topic artifact.
 
 % =====================================================================
-%  REPRODUCIBILITY APPENDIX
+% REPRODUCIBILITY APPENDIX
 % =====================================================================

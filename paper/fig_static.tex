@@ -1,0 +1,14 @@
+\begin{tikzpicture}
+\begin{axis}[width=0.92\linewidth,height=5.2cm,xlabel={layer},ylabel={re-entanglement leak $d(H_1,H_t)$},ymin=0, xmin=1,xmax=24,grid=both,grid style={line width=.2pt,draw=gray!18},major grid style={line width=.3pt,draw=gray!30},tick align=outside,tick style={gray!50},axis line style={gray!55},legend style={font=\footnotesize,draw=gray!40,fill=white,fill opacity=0.85,text opacity=1},legend cell align=left,legend pos=north east,label style={font=\small},tick label style={font=\footnotesize}]
+\addplot[draw=none,name path=lor] coordinates {(1,0.285) (2,0.368) (3,0.402) (4,0.484) (5,0.571) (6,0.594) (7,0.478) (8,0.409) (9,0.422) (10,0.328) (11,0.366) (12,0.418) (13,0.326) (14,0.361) (15,0.317) (16,0.272) (17,0.276) (18,0.282) (19,0.306) (20,0.291) (21,0.286) (22,0.289) (23,0.295) (24,0.284)};
+\addplot[draw=none,name path=hir] coordinates {(1,0.538) (2,0.482) (3,0.485) (4,0.550) (5,0.594) (6,0.621) (7,0.516) (8,0.431) (9,0.437) (10,0.355) (11,0.402) (12,0.459) (13,0.372) (14,0.414) (15,0.375) (16,0.340) (17,0.365) (18,0.378) (19,0.416) (20,0.400) (21,0.380) (22,0.411) (23,0.423) (24,0.426)};
+\addplot[blue!55,opacity=0.18,forget plot] fill between[of=lor and hir];
+\addplot[draw=none,name path=los] coordinates {(1,0.326) (2,0.321) (3,0.373) (4,0.486) (5,0.561) (6,0.602) (7,0.508) (8,0.438) (9,0.462) (10,0.361) (11,0.372) (12,0.420) (13,0.319) (14,0.322) (15,0.271) (16,0.234) (17,0.236) (18,0.235) (19,0.250) (20,0.241) (21,0.225) (22,0.230) (23,0.235) (24,0.229)};
+\addplot[draw=none,name path=his] coordinates {(1,0.461) (2,0.472) (3,0.495) (4,0.566) (5,0.630) (6,0.651) (7,0.561) (8,0.479) (9,0.487) (10,0.385) (11,0.443) (12,0.490) (13,0.367) (14,0.378) (15,0.324) (16,0.283) (17,0.277) (18,0.282) (19,0.298) (20,0.295) (21,0.284) (22,0.295) (23,0.299) (24,0.288)};
+\addplot[orange!70,opacity=0.18,forget plot] fill between[of=los and his];
+\addplot[blue!70!black,thick,mark=*,mark size=1.1pt] coordinates {(1,0.354) (2,0.445) (3,0.457) (4,0.532) (5,0.582) (6,0.608) (7,0.500) (8,0.423) (9,0.432) (10,0.344) (11,0.390) (12,0.437) (13,0.349) (14,0.383) (15,0.356) (16,0.307) (17,0.336) (18,0.344) (19,0.367) (20,0.357) (21,0.347) (22,0.363) (23,0.377) (24,0.380)};
+\addlegendentry{real dialogues}
+\addplot[orange!75!black,thick,densely dashed,mark=square*,mark size=1.1pt] coordinates {(1,0.383) (2,0.420) (3,0.436) (4,0.536) (5,0.610) (6,0.629) (7,0.525) (8,0.464) (9,0.475) (10,0.373) (11,0.392) (12,0.449) (13,0.353) (14,0.362) (15,0.313) (16,0.258) (17,0.254) (18,0.257) (19,0.271) (20,0.266) (21,0.258) (22,0.263) (23,0.261) (24,0.259)};
+\addlegendentry{scrambled twins}
+\end{axis}
+\end{tikzpicture}
