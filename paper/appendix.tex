@@ -32,11 +32,12 @@ Table~\ref{tab:matrix} records the evaluation matrix. The acceptance risk for a 
 is not novelty but breadth, the objection that the effect was missed because of the wrong model,
 space, or rank; we therefore enumerate the cells that close that objection and mark each as done
 or pending, with the released harness producing the statistic for both. The single most
-important pending cell is the safety subspace in SAE feature space on an instruction-tuned chat
-model (e.g.\ Gemma~2 with Gemma Scope, \citealp{lieberum2024gemmascope}). It is supported by the
-released harness but is pending larger compute: a \texttt{transformer\_lens} plus Gemma-2 load
-issue prevented it on the available T4, and it is expected to complete on an A100-class GPU. We
-mark it pending rather than report it.
+important such cell, the safety subspace in SAE feature space on an instruction-tuned chat model,
+is now complete: on Gemma-2-2B-it with Gemma Scope (\citealp{lieberum2024gemmascope}; run in
+bfloat16 on an L4/A100, after a \texttt{transformer\_lens} plus Gemma-2 load issue ruled out the
+T4), both the hallucination and the safety subspace return the null (Table~\ref{tab:gemma}). The
+remaining pending cells are a mixture-of-experts model, higher-rank subspaces, a within-topic
+content control, and a behavioral static-projector test.
 
 \begin{table}[t]
 \centering
@@ -49,17 +50,18 @@ Qwen2.5-0.5B-Instruct, raw acts, rank-1 & baseline & done \\
 Qwen2.5-1.5B-Instruct, raw acts, rank-1 & ``only the smallest model'' & done \\
 GPT-2 small, SAE feature space, rank-1 & ``raw acts aren't where methods operate'' & done \\
 static-projector demonstration (Qwen2.5-0.5B) & ``you never tested the actual claim'' & done \\
-safety subspace in SAE space, instruction-tuned (Gemma-2 + Gemma Scope) & SAE safety side on a chat model & pending (A100) \\
+Gemma-2-2B-it, SAE space, hallucination + safety & ``SAE safety side on a chat model'' & done \\
 mixture-of-experts model (per-expert premise) & per-expert variant of the premise & pending \\
 rank-$2$/$3$ subspaces & ``rank-1 is too crude'' & pending (needs hundreds of probes) \\
 within-topic content control & ``topic conflated with content'' & pending \\
 behavioral (generation-time) static-projector test & generation-time mis-specification & pending (future work) \\
 \bottomrule
 \end{tabular}
-\caption{Evaluation matrix. Raw-activation replication across two model scales and the SAE
-feature-space replication (GPT-2) are complete, as is the static-projector demonstration. The
-instruction-tuned SAE cell for the safety subspace is supported by the released harness but
-pending a larger GPU. The protocol ports to every pending cell with only a backend swap.}
+\caption{Evaluation matrix. Raw-activation replication across two model scales, the SAE
+feature-space replication (GPT-2 and Gemma-2-2B-it, the latter for both the hallucination and
+the safety subspace), and the static-projector demonstration are complete. The remaining cells
+(mixture-of-experts, higher rank, within-topic control, behavioral test) are pending; the
+protocol ports to each with only a backend swap.}
 \label{tab:matrix}
 \end{table}
 

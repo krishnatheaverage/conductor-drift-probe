@@ -50,11 +50,11 @@ anyone making a ``context changes the representation'' claim; we also derive an 
 requirement for conditional-alignment methods, namely that they report this controlled
 measurement before assuming the premise. We report the null as scoped to the models and
 conditions tested. \textbf{All numbers in this draft are from
-real runs on the released code. The null replicates across two model scales in raw
-activation space (0.5B, 1.5B) and, critically, in sparse-autoencoder feature space (the
-space disentanglement methods operate in), where the scrambled twin moves the subspace
-\emph{more} than real dialogues at the late layers. The larger-instruction-model and
-mixture-of-experts cells are in progress and are marked as such.}
+real runs on the released code. The null replicates across raw activation space (Qwen2.5-0.5B
+and 1.5B) and sparse-autoencoder feature space (GPT-2 small, and Gemma-2-2B-it for \emph{both}
+the hallucination and the safety/refusal subspace), the representation disentanglement methods
+operate in, where the scrambled twin matches or exceeds the real spread at several layers. Only
+the mixture-of-experts cell remains in progress.}
 \end{abstract}
 
 \section{Introduction}
@@ -97,11 +97,9 @@ jump, a same-context null that carries no length/topic variance, and a small-sam
 ($n{=}3$ dialogue) placebo comparison.
 \item \textbf{A robustness finding} (\S\ref{sec:main}): under the full protocol the
 hallucination subspace's apparent context-conditionality is statistically indistinguishable
-from a length/topic artifact, and this null \emph{replicates} across two model scales in raw
-activation space and in SAE feature space, the representation conditional disentanglement
-actually uses; the safety/refusal subspace is not even cleanly recoverable below the mid
-layers, so the targeted cross-subspace entanglement cannot be measured where it would be
-needed.
+from a length/topic artifact, and this null \emph{replicates} across two raw model scales and in
+SAE feature space for \emph{both} the hallucination and the safety/refusal subspace (the latter
+on Gemma-2-2B-it), the representation conditional disentanglement actually uses.
 \item \textbf{Actionable recommendations} (\S\ref{sec:lessons}): a control checklist for
 representational-drift claims, and the requirement that conditional-alignment methods report
 the controlled premise measurement (and a failing static baseline) before introducing
@@ -130,17 +128,19 @@ measurement before assuming it.
 \paragraph{What this does and does not establish.} It establishes that, for the model and
 construction tested, three intuitive measurements of context-conditionality are
 confounded, and that the controlled measurement returns a null. It does \emph{not}
-establish that the premise is universally false. The most important open cells, which we
-are running and which any method paper relying on the premise should report, are:
-\textbf{(a)} SAE feature space on an \emph{instruction-tuned} model (we have shown the
-null replicates in GPT-2 SAE space for the hallucination subspace; the safety side needs a
-chat model with released SAEs, e.g.\ Gemma~2 with Gemma Scope, \citealp{lieberum2024gemmascope});
-\textbf{(b)} larger instruction-tuned models, where the
-refusal direction is recoverable at more layers and the safety side becomes testable;
-\textbf{(c)} a mixture-of-experts model, for the per-expert variant of the premise;
-\textbf{(d)} higher-rank subspaces; and \textbf{(e)} a direct test of mis-specification,
-fitting a static disentangling projector and measuring whether it re-entangles at later
-turns. Our protocol ports to all five with only a change of backend.
+establish that the premise is universally false. We have closed the most important cells and
+mark the remainder. The instruction-tuned SAE-feature-space cell is now run on Gemma-2-2B-it for
+\emph{both} the hallucination and the safety/refusal subspace (Section~\ref{sec:main},
+Table~\ref{tab:gemma}), the only setting in which the safety subspace is recoverable enough to
+test, and it too returns the null; and the static-projector mis-specification test
+(Section~\ref{sec:res-static}) shows the static baseline does not genuinely fail. The genuinely
+open cells are: \textbf{(a)} larger instruction-tuned models and a mixture-of-experts model (for
+the per-expert variant of the premise); \textbf{(b)} higher-rank subspaces (rank-1 is the powered
+default); \textbf{(c)} a within-topic content manipulation that separates epistemic state from
+surface topic; and \textbf{(d)} a behavioral, generation-time static-projector test. A caveat on
+the Gemma cell: the public Gemma Scope SAEs are base-model-trained, so the instruction-tuned run
+is a mild distribution mismatch and is indicative. Our protocol ports to all of these with only a
+change of backend.
 
 \paragraph{Residual confounds in the control.} The scrambled twin holds token length and
 topic but conflates coherent ``dialogue content'' with ``epistemic state''; a fully
