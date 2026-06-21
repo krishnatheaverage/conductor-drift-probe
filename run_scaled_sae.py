@@ -42,7 +42,7 @@ BACKENDS = {
                  layers=list(range(12)), chat=False),
     "gemma": dict(model="google/gemma-2-2b-it", release="gemma-scope-2b-pt-res-canonical",
                   sae_id=lambda l: f"layer_{l}/width_16k/canonical",
-                  layers=[3, 6, 9, 12, 15, 18, 21], chat=True),
+                  layers=[3, 6, 9, 12, 15, 18, 21], chat=True, no_processing=True),
 }
 
 
@@ -158,7 +158,13 @@ def run(args):
               "distribution mismatch (results indicative). See --gemma-model.")
     from transformer_lens import HookedTransformer
     print("loading model (this downloads weights on first run) ...", flush=True)
-    model = HookedTransformer.from_pretrained(model_name, device=device)
+    if cfg.get("no_processing"):
+        # skips the slow LayerNorm-folding step (avoids the Gemma-2 load hang) AND matches
+        # how the Gemma Scope SAEs were trained (resolves the distribution-mismatch caveat).
+        model = HookedTransformer.from_pretrained_no_processing(model_name, device=device)
+    else:
+        model = HookedTransformer.from_pretrained(model_name, device=device)
+    print("model ready", flush=True)
     layers = cfg["layers"]
     print(f"loading {len(layers)} SAEs (each ~150-300MB on first run; this phase can be "
           f"quiet for a minute, do NOT interrupt) ...", flush=True)
